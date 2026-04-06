@@ -1,0 +1,1501 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SwiftUI Mastery Roadmap</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Playfair+Display:wght@600;800&family=Inter:wght@400;500;600&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+:root{
+  --primary:#00ff88;
+  --red:#ff0055;
+  --gold:#ffd700;
+  --blue:#38bdf8;
+  --purple:#c084fc;
+  --orange:#fb923c;
+  --dark:#050817;
+  --darker:#020510;
+  --card:#0a0e27;
+  --card2:#0d1130;
+  --border:rgba(0,255,136,.13);
+  --border2:rgba(0,255,136,.28);
+  --text:#e0e0e0;
+  --dim:#5a6580;
+  --mono:'Space Mono',monospace;
+  --serif:'Playfair Display',serif;
+  --sans:'Inter',sans-serif;
+  --code:'Fira Code',monospace;
+}
+
+::-webkit-scrollbar{width:5px}
+::-webkit-scrollbar-track{background:var(--darker)}
+::-webkit-scrollbar-thumb{background:var(--primary);border-radius:3px}
+
+body{
+  font-family:var(--sans);
+  background:var(--darker);
+  color:var(--text);
+  overflow-x:hidden;
+  cursor:crosshair;
+}
+
+/* ── grid bg ── */
+.bg-grid{
+  position:fixed;inset:0;
+  background:
+    linear-gradient(90deg,rgba(0,255,136,.025) 1px,transparent 1px),
+    linear-gradient(rgba(0,255,136,.025) 1px,transparent 1px);
+  background-size:48px 48px;
+  animation:gridScroll 22s linear infinite;
+  pointer-events:none;z-index:0;
+}
+@keyframes gridScroll{to{transform:translate(48px,48px)}}
+
+/* ── floaters ── */
+.floater{
+  position:fixed;font-family:var(--mono);font-size:1.6rem;
+  opacity:.05;pointer-events:none;color:var(--primary);
+  animation:floatAnim 24s ease-in-out infinite;
+}
+.floater:nth-child(2){top:7%;left:5%;animation-delay:0s}
+.floater:nth-child(3){top:52%;right:10%;animation-delay:8s}
+.floater:nth-child(4){bottom:15%;left:15%;animation-delay:16s}
+@keyframes floatAnim{
+  0%,100%{transform:translate(0,0) rotate(0deg)}
+  25%{transform:translate(16px,-16px) rotate(3deg)}
+  50%{transform:translate(-16px,16px) rotate(-3deg)}
+  75%{transform:translate(16px,16px) rotate(3deg)}
+}
+
+/* ── top reading bar ── */
+#topBar{position:fixed;top:0;left:0;height:2px;background:var(--primary);width:0%;z-index:500;box-shadow:0 0 8px var(--primary);transition:width .08s}
+
+/* ── sidebar ── */
+#sidebar{
+  position:fixed;top:0;left:0;width:256px;height:100vh;
+  background:rgba(2,5,16,.97);border-right:1px solid var(--border2);
+  padding:1.4rem .9rem;overflow-y:auto;z-index:100;
+  transform:translateX(-100%);transition:transform .28s ease;
+}
+#sidebar.open{transform:translateX(0)}
+#sidebar h3{
+  font-family:var(--mono);font-size:.65rem;color:var(--primary);
+  letter-spacing:.15em;text-transform:uppercase;
+  margin-bottom:.9rem;padding-bottom:.5rem;border-bottom:1px solid var(--border);
+}
+.nav-phase{
+  font-family:var(--mono);font-size:.6rem;color:var(--gold);
+  letter-spacing:.1em;text-transform:uppercase;
+  margin:.9rem 0 .3rem .4rem;
+}
+#sidebar a{
+  display:block;font-family:var(--mono);font-size:.68rem;
+  color:var(--dim);text-decoration:none;
+  padding:.3rem .7rem;border-radius:3px;margin-bottom:.1rem;
+  transition:color .2s,background .2s;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+#sidebar a:hover,#sidebar a.active{color:var(--primary);background:rgba(0,255,136,.07)}
+
+/* ── hamburger ── */
+#menuBtn{
+  position:fixed;top:1rem;left:1rem;z-index:200;
+  background:var(--card);border:1px solid var(--border2);
+  color:var(--primary);font-family:var(--mono);font-size:1rem;
+  width:38px;height:38px;cursor:pointer;border-radius:4px;
+  display:flex;align-items:center;justify-content:center;
+  transition:background .2s;
+}
+#menuBtn:hover{background:rgba(0,255,136,.1)}
+
+/* ── back to top ── */
+#btt{
+  position:fixed;bottom:1.8rem;right:1.8rem;z-index:300;
+  background:var(--card);border:1px solid var(--border2);
+  color:var(--primary);font-family:var(--mono);font-size:.7rem;
+  padding:.45rem .8rem;border-radius:4px;cursor:pointer;
+  opacity:0;pointer-events:none;transition:opacity .3s,background .2s;
+}
+#btt.show{opacity:1;pointer-events:auto}
+#btt:hover{background:rgba(0,255,136,.1)}
+
+/* ── main content ── */
+#content{
+  position:relative;z-index:1;
+  max-width:880px;margin:0 auto;
+  padding:0 2rem 6rem;
+}
+
+/* ── HERO ── */
+.hero{
+  min-height:55vh;display:flex;flex-direction:column;
+  justify-content:center;padding:5rem 0 4rem;
+  border-bottom:1px solid var(--border);margin-bottom:3rem;
+}
+.hero-eye{
+  font-family:var(--mono);font-size:.72rem;color:var(--primary);
+  letter-spacing:.2em;text-transform:uppercase;margin-bottom:1rem;
+  opacity:0;animation:fadeUp .7s ease .1s forwards;
+}
+.hero-title{
+  font-family:var(--serif);font-size:clamp(2.8rem,9vw,7rem);
+  font-weight:800;line-height:1;color:var(--primary);
+  position:relative;
+  opacity:0;animation:fadeUp .7s ease .3s forwards,glitchFloat 4s ease-in-out 1s infinite;
+}
+.hero-title::before{content:attr(data-text);position:absolute;top:0;left:0;color:var(--red);animation:g1 3s infinite;z-index:-1}
+.hero-title::after{content:attr(data-text);position:absolute;top:0;left:0;color:var(--gold);animation:g2 2.5s infinite;z-index:-2}
+@keyframes glitchFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
+@keyframes g1{0%,100%{transform:translate(0)}20%{transform:translate(-2px,2px)}60%{transform:translate(2px,2px)}}
+@keyframes g2{0%,100%{transform:translate(0)}30%{transform:translate(2px,-2px)}70%{transform:translate(-2px,2px)}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+
+.hero-sub{
+  font-family:var(--mono);font-size:clamp(.75rem,2vw,.95rem);
+  color:var(--dim);margin-top:1.2rem;
+  opacity:0;animation:fadeUp .7s ease .5s forwards;
+}
+.hero-sub span{color:var(--primary)}
+
+/* ── stats row ── */
+.stats{
+  display:flex;gap:1rem;flex-wrap:wrap;margin-top:2.5rem;
+  opacity:0;animation:fadeUp .7s ease .7s forwards;
+}
+.stat{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:6px;padding:.9rem 1.2rem;text-align:center;flex:1;min-width:110px;
+}
+.stat .n{font-family:var(--mono);font-size:1.8rem;font-weight:700;color:var(--primary);display:block}
+.stat .l{font-size:.65rem;color:var(--dim);letter-spacing:.08em;text-transform:uppercase;margin-top:.2rem}
+
+/* ── phase header ── */
+.phase-header{
+  display:flex;align-items:center;gap:1rem;
+  margin:4rem 0 1.5rem;padding:1.2rem 1.6rem;
+  background:linear-gradient(90deg,rgba(0,255,136,.06),transparent);
+  border-left:3px solid var(--primary);border-radius:0 6px 6px 0;
+}
+.phase-header .ph-num{
+  font-family:var(--mono);font-size:.65rem;color:var(--primary);
+  letter-spacing:.12em;text-transform:uppercase;white-space:nowrap;
+}
+.phase-header h2{
+  font-family:var(--serif);font-size:clamp(1.3rem,3vw,2rem);
+  font-weight:800;color:var(--text);
+}
+.phase-header .ph-days{
+  font-family:var(--mono);font-size:.65rem;color:var(--dim);
+  margin-left:auto;white-space:nowrap;
+}
+
+/* ── topic card ── */
+.topic{
+  background:linear-gradient(135deg,var(--card),var(--card2));
+  border:1px solid var(--border);border-radius:8px;
+  padding:1.8rem 2rem;margin:1rem 0;
+  position:relative;overflow:hidden;
+  opacity:0;transform:translateY(20px);
+  transition:border-color .3s,box-shadow .3s,transform .3s,opacity .5s;
+}
+.topic.visible{opacity:1;transform:translateY(0)}
+.topic::before{
+  content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;
+  background:linear-gradient(90deg,transparent,rgba(0,255,136,.04),transparent);
+  transition:left .5s;
+}
+.topic:hover::before{left:100%}
+.topic:hover{border-color:var(--border2);box-shadow:0 0 28px rgba(0,255,136,.07)}
+
+.topic-head{display:flex;align-items:flex-start;gap:1rem;margin-bottom:.9rem}
+.topic-icon{font-size:1.4rem;line-height:1;flex-shrink:0;margin-top:.1rem}
+.topic-title{
+  font-family:var(--mono);font-size:.95rem;font-weight:700;
+  color:var(--primary);letter-spacing:.02em;
+}
+.topic-badges{display:flex;gap:.4rem;flex-wrap:wrap;margin-top:.3rem}
+
+.badge{
+  font-family:var(--mono);font-size:.58rem;font-weight:700;
+  padding:.18rem .55rem;border-radius:3px;
+  letter-spacing:.07em;text-transform:uppercase;
+}
+.b-easy  {background:rgba(0,255,136,.12);color:var(--primary);border:1px solid rgba(0,255,136,.3)}
+.b-medium{background:rgba(255,215,0,.1);color:var(--gold);border:1px solid rgba(255,215,0,.3)}
+.b-hard  {background:rgba(255,0,85,.12);color:var(--red);border:1px solid rgba(255,0,85,.3)}
+.b-tag   {background:rgba(56,189,248,.1);color:var(--blue);border:1px solid rgba(56,189,248,.25)}
+.b-days  {background:rgba(192,132,252,.1);color:var(--purple);border:1px solid rgba(192,132,252,.25)}
+.b-new   {background:rgba(251,146,60,.1);color:var(--orange);border:1px solid rgba(251,146,60,.25)}
+
+.topic-body{font-size:.85rem;line-height:1.7;color:#b0bec5}
+
+.topic-body p{margin:.5rem 0}
+.topic-body p+p{margin-top:.4rem}
+
+.topic-concepts{
+  margin-top:1rem;padding-top:1rem;
+  border-top:1px solid var(--border);
+}
+.concepts-label{
+  font-family:var(--mono);font-size:.62rem;color:var(--dim);
+  letter-spacing:.1em;text-transform:uppercase;margin-bottom:.6rem;
+}
+.concepts-list{display:flex;flex-wrap:wrap;gap:.4rem}
+.concept{
+  font-family:var(--code);font-size:.72rem;
+  background:rgba(0,0,0,.3);color:#f9a8d4;
+  padding:.2rem .5rem;border-radius:3px;
+  border:1px solid rgba(244,114,182,.15);
+}
+
+.kotlin-note{
+  margin-top:.9rem;padding:.7rem 1rem;
+  background:rgba(56,189,248,.06);
+  border-left:3px solid var(--blue);border-radius:0 4px 4px 0;
+  font-size:.78rem;color:var(--blue);font-family:var(--mono);
+  line-height:1.5;
+}
+.kotlin-note::before{content:'[Kotlin Brain] ';font-weight:700;color:var(--gold)}
+
+/* ── checkpoint ── */
+.checkpoint{
+  display:flex;align-items:center;gap:.8rem;
+  background:rgba(0,255,136,.04);border:1px solid var(--border2);
+  border-radius:6px;padding:1rem 1.4rem;margin:1.5rem 0;
+}
+.checkpoint-icon{font-size:1.3rem}
+.checkpoint-text{font-family:var(--mono);font-size:.75rem;color:var(--primary);line-height:1.5}
+.checkpoint-text strong{color:var(--gold)}
+
+/* ── divider ── */
+.divider{height:1px;background:linear-gradient(90deg,transparent,var(--border2),transparent);margin:3rem 0}
+
+/* ── footer ── */
+footer{
+  text-align:center;padding:3rem 0 2rem;
+  border-top:1px solid var(--border);
+  font-family:var(--mono);font-size:.68rem;color:var(--dim);margin-top:4rem;
+}
+footer span{color:var(--primary)}
+
+@media(max-width:640px){
+  #content{padding:4rem 1rem 5rem}
+  .stats{gap:.6rem}
+  .stat .n{font-size:1.4rem}
+  .topic{padding:1.3rem 1.2rem}
+}
+</style>
+</head>
+<body>
+
+<div class="bg-grid"></div>
+<div class="floater">{ }</div>
+<div class="floater">&lt;/&gt;</div>
+<div class="floater">◇</div>
+
+<div id="topBar"></div>
+
+<nav id="sidebar">
+  <h3>📍 Navigation</h3>
+  <div id="navLinks"></div>
+</nav>
+
+<button id="menuBtn" title="Menu">☰</button>
+<button id="btt" onclick="scrollTo({top:0,behavior:'smooth'})">↑ TOP</button>
+
+<div id="content">
+
+<!-- ═══════════════════════════════ HERO ═══════════════════════════════ -->
+<header class="hero">
+  <div class="hero-eye">// swiftui mastery roadmap</div>
+  <h1 class="hero-title" data-text="SWIFT UI">SWIFT UI</h1>
+  <p class="hero-sub">
+    Zero Swift → production iOS apps.<br>
+    Built for <span>Android/Kotlin developers</span> crossing over.
+  </p>
+  <div class="stats">
+    <div class="stat"><span class="n">14</span><span class="l">Phases</span></div>
+    <div class="stat"><span class="n">52</span><span class="l">Topics</span></div>
+    <div class="stat"><span class="n">~6</span><span class="l">Months</span></div>
+    <div class="stat"><span class="n">1</span><span class="l">Real App Shipped</span></div>
+  </div>
+</header>
+
+<!-- ═══════════════════════════════ PHASE 0 ═══════════════════════════════ -->
+<div class="phase-header" id="phase-0">
+  <span class="ph-num">Phase 00</span>
+  <h2>Swift Language Fundamentals</h2>
+  <span class="ph-days">~14–20 days</span>
+</div>
+
+<div class="topic" id="swift-syntax">
+  <div class="topic-head">
+    <div class="topic-icon">🔤</div>
+    <div>
+      <div class="topic-title">Swift Syntax Basics</div>
+      <div class="topic-badges">
+        <span class="badge b-easy">Easy</span>
+        <span class="badge b-days">3–5 days</span>
+        <span class="badge b-tag">Foundation</span>
+      </div>
+    </div>
+  </div>
+  <div class="topic-body">
+    <p>Swift is Kotlin's sister language. <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">let</code> = <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">val</code>, <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">var</code> = <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">var</code>, <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">nil</code> = <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">null</code>. Optionals work like Kotlin nullable types — <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">String?</code> can be nil. Unwrap with <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">if let</code>, <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">guard let</code>, or <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">!</code> (force unwrap — dangerous). String interpolation uses <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">\(variable)</code> instead of <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">${variable}</code>. Arrays use <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">[1,2,3]</code>, dictionaries use <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">["key":"value"]</code>. Type inference works identically to Kotlin.</p>
+    <div class="kotlin-note">val/var → let/var · null → nil · ${x} → \(x) · ?: → ?? · !! → !</div>
+  </div>
+  <div class="topic-concepts">
+    <div class="concepts-label">Key Concepts</div>
+    <div class="concepts-list">
+      <span class="concept">let / var</span><span class="concept">String?</span><span class="concept">if let</span><span class="concept">guard let</span><span class="concept">?? nil coalescing</span><span class="concept">string interpolation</span><span class="concept">arrays</span><span class="concept">dictionaries</span><span class="concept">type inference</span>
+    </div>
+  </div>
+</div>
+
+<div class="topic" id="swift-enums">
+  <div class="topic-head">
+    <div class="topic-icon">🔀</div>
+    <div>
+      <div class="topic-title">Enums, Structs & Switch</div>
+      <div class="topic-badges">
+        <span class="badge b-easy">Easy</span>
+        <span class="badge b-days">3–4 days</span>
+        <span class="badge b-tag">Foundation</span>
+      </div>
+    </div>
+  </div>
+  <div class="topic-body">
+    <p>Swift enums with associated values are Kotlin sealed classes. <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">enum State { case loading; case success(String); case failure(Error) }</code>. The <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">switch</code> statement is exhaustive by default — it won't compile if you miss a case. Structs are value types — copying creates a completely independent copy. SwiftUI Views are always structs. Classes are reference types like Kotlin.</p>
+    <div class="kotlin-note">sealed class → enum with associated values · when → switch · data class → struct (mostly)</div>
+  </div>
+  <div class="topic-concepts">
+    <div class="concepts-label">Key Concepts</div>
+    <div class="concepts-list">
+      <span class="concept">enum associated values</span><span class="concept">switch exhaustiveness</span><span class="concept">struct (value type)</span><span class="concept">class (reference type)</span><span class="concept">computed properties</span><span class="concept">mutating func</span>
+    </div>
+  </div>
+</div>
+
+<div class="topic" id="swift-closures">
+  <div class="topic-head">
+    <div class="topic-icon">🔧</div>
+    <div>
+      <div class="topic-title">Functions, Closures & Higher-Order Functions</div>
+      <div class="topic-badges">
+        <span class="badge b-medium">Medium</span>
+        <span class="badge b-days">3–5 days</span>
+        <span class="badge b-tag">Foundation</span>
+      </div>
+    </div>
+  </div>
+  <div class="topic-body">
+    <p>Swift functions have argument labels — <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">func greet(for person: String)</code> — the external label <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">for</code> is used at the call site. Closures use trailing syntax: when the last argument is a closure, move it outside the parentheses. This is how every SwiftUI modifier works — <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">Button("Tap") { doSomething() }</code>. <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">@escaping</code> means the closure outlives the function — used for async callbacks. filter/map/reduce work identically to Kotlin with <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">$0</code> shorthand.</p>
+    <div class="kotlin-note">fun → func · lambdas → closures · it → $0 · trailing lambda → trailing closure</div>
+  </div>
+  <div class="topic-concepts">
+    <div class="concepts-label">Key Concepts</div>
+    <div class="concepts-list">
+      <span class="concept">argument labels</span><span class="concept">trailing closure</span><span class="concept">@escaping</span><span class="concept">$0 shorthand</span><span class="concept">filter/map/reduce</span><span class="concept">compactMap</span><span class="concept">generics basics</span>
+    </div>
+  </div>
+</div>
+
+<div class="topic" id="swift-protocols">
+  <div class="topic-head">
+    <div class="topic-icon">🏗️</div>
+    <div>
+      <div class="topic-title">Protocols, Extensions & Codable</div>
+      <div class="topic-badges">
+        <span class="badge b-medium">Medium</span>
+        <span class="badge b-days">4–6 days</span>
+        <span class="badge b-tag">Foundation</span>
+      </div>
+    </div>
+  </div>
+  <div class="topic-body">
+    <p>Protocols are interfaces but more powerful. Extensions can add protocol conformance to ANY type retroactively — even types you don't own. <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">Codable</code> = automatic JSON encode/decode (like <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">@Serializable</code>). <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">Identifiable</code> is required for SwiftUI Lists — needs a unique <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">id</code> property. <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">Equatable</code> and <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">Hashable</code> work just like Kotlin. Protocol default implementations via extensions replace abstract classes.</p>
+    <div class="kotlin-note">interface → protocol · extension fun → extension · @Serializable → Codable · data class id → Identifiable</div>
+  </div>
+  <div class="topic-concepts">
+    <div class="concepts-label">Key Concepts</div>
+    <div class="concepts-list">
+      <span class="concept">protocol conformance</span><span class="concept">extension</span><span class="concept">Codable</span><span class="concept">Identifiable</span><span class="concept">Equatable / Hashable</span><span class="concept">JSONEncoder / JSONDecoder</span><span class="concept">protocol composition</span>
+    </div>
+  </div>
+</div>
+
+<div class="checkpoint">
+  <div class="checkpoint-icon">🏁</div>
+  <div class="checkpoint-text"><strong>Phase 0 Checkpoint</strong> — Before moving on: write a Swift playground that models a complete order system using only enums and structs, with Codable conformance, and a switch that handles every state. No reference material.</div>
+</div>
+
+<!-- ═══════════════════════════════ PHASE 1 ═══════════════════════════════ -->
+<div class="phase-header" id="phase-1">
+  <span class="ph-num">Phase 01</span>
+  <h2>SwiftUI Fundamentals</h2>
+  <span class="ph-days">~14–20 days</span>
+</div>
+
+<div class="topic" id="first-view">
+  <div class="topic-head">
+    <div class="topic-icon">📱</div>
+    <div>
+      <div class="topic-title">Your First View — Text, Image, Stacks</div>
+      <div class="topic-badges">
+        <span class="badge b-easy">Easy</span>
+        <span class="badge b-days">2–3 days</span>
+        <span class="badge b-tag">SwiftUI Core</span>
+      </div>
+    </div>
+  </div>
+  <div class="topic-body">
+    <p>A SwiftUI View is a struct conforming to the <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">View</code> protocol with a <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">body</code> computed property — like a Composable function but as a struct. <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">VStack</code> = Column, <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">HStack</code> = Row, <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">ZStack</code> = Box. Modifiers chain and order matters — <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">.padding().background()</code> ≠ <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">.background().padding()</code>. SF Symbols give you 5000+ free icons via <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">Image(systemName:)</code>. Always use system colours — dark mode works free.</p>
+    <div class="kotlin-note">@Composable fun → struct : View · Modifier chain → .modifier().modifier() · painterResource → Image(systemName:)</div>
+  </div>
+  <div class="topic-concepts">
+    <div class="concepts-label">Key Concepts</div>
+    <div class="concepts-list">
+      <span class="concept">struct : View</span><span class="concept">body</span><span class="concept">some View</span><span class="concept">VStack / HStack / ZStack</span><span class="concept">Text modifiers</span><span class="concept">SF Symbols</span><span class="concept">Spacer</span><span class="concept">ScrollView</span>
+    </div>
+  </div>
+</div>
+
+<div class="topic" id="layout-system">
+  <div class="topic-head">
+    <div class="topic-icon">📐</div>
+    <div>
+      <div class="topic-title">Layout System — frame, GeometryReader, LazyStacks</div>
+      <div class="topic-badges">
+        <span class="badge b-medium">Medium</span>
+        <span class="badge b-days">4–5 days</span>
+        <span class="badge b-tag">SwiftUI Core</span>
+      </div>
+    </div>
+  </div>
+  <div class="topic-body">
+    <p>SwiftUI layout is a 3-step negotiation: parent proposes size → child picks its own size → parent positions child. <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">Text</code> shrinks to content, <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">Color</code> expands to fill. Use <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">.frame()</code> to constrain sizes. <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">GeometryReader</code> gives you the parent's size at runtime. <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">LazyVStack</code>/<code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">LazyHStack</code> = lazy loading (like <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">LazyColumn</code>). <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">overlay</code> and <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">background</code> stack views without ZStack. Grid layouts use <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">LazyVGrid</code> / <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">LazyHGrid</code>.</p>
+    <div class="kotlin-note">LazyColumn → LazyVStack in ScrollView · BoxWithConstraints → GeometryReader · fillMaxSize → .frame(maxWidth:.infinity)</div>
+  </div>
+  <div class="topic-concepts">
+    <div class="concepts-label">Key Concepts</div>
+    <div class="concepts-list">
+      <span class="concept">.frame()</span><span class="concept">GeometryReader</span><span class="concept">LazyVStack</span><span class="concept">LazyVGrid</span><span class="concept">.overlay()</span><span class="concept">.background()</span><span class="concept">alignment</span><span class="concept">padding</span>
+    </div>
+  </div>
+</div>
+
+<div class="topic" id="state-basics">
+  <div class="topic-head">
+    <div class="topic-icon">⚡</div>
+    <div>
+      <div class="topic-title">@State, @Binding — Local State</div>
+      <div class="topic-badges">
+        <span class="badge b-medium">Medium</span>
+        <span class="badge b-days">3–5 days</span>
+        <span class="badge b-tag">State Management</span>
+      </div>
+    </div>
+  </div>
+  <div class="topic-body">
+    <p><code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">@State</code> is local, private state that lives inside one View — like <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">remember { mutableStateOf() }</code> in Compose. When it changes, SwiftUI re-evaluates the <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">body</code>. <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">@Binding</code> is a two-way connection to a parent's <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">@State</code> — like passing a lambda to update parent state in Compose, but cleaner. Pass a binding with <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">$variableName</code>. Always mark <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">@State</code> as <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">private</code>.</p>
+    <div class="kotlin-note">remember { mutableStateOf() } → @State · hoisted state callback → @Binding · state hoisting concept is identical</div>
+  </div>
+  <div class="topic-concepts">
+    <div class="concepts-label">Key Concepts</div>
+    <div class="concepts-list">
+      <span class="concept">@State</span><span class="concept">@Binding</span><span class="concept">$ prefix</span><span class="concept">state-driven UI</span><span class="concept">Toggle</span><span class="concept">TextField</span><span class="concept">Slider</span>
+    </div>
+  </div>
+</div>
+
+<div class="topic" id="lists">
+  <div class="topic-head">
+    <div class="topic-icon">📋</div>
+    <div>
+      <div class="topic-title">List, ForEach & Dynamic Content</div>
+      <div class="topic-badges">
+        <span class="badge b-easy">Easy</span>
+        <span class="badge b-days">2–3 days</span>
+        <span class="badge b-tag">SwiftUI Core</span>
+      </div>
+    </div>
+  </div>
+  <div class="topic-body">
+    <p><code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">List</code> is the iOS equivalent of <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">LazyColumn</code> — it is lazy by default and styled. Items must conform to <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">Identifiable</code>. <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">ForEach</code> is the loop construct inside Views. Swipe-to-delete with <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">.onDelete</code>. Reorder with <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">.onMove</code>. Section headers with <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">Section</code>. Customise the list style with <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">.listStyle()</code>.</p>
+  </div>
+  <div class="topic-concepts">
+    <div class="concepts-label">Key Concepts</div>
+    <div class="concepts-list">
+      <span class="concept">List</span><span class="concept">ForEach</span><span class="concept">Identifiable</span><span class="concept">.onDelete</span><span class="concept">.onMove</span><span class="concept">Section</span><span class="concept">listStyle</span>
+    </div>
+  </div>
+</div>
+
+<div class="checkpoint">
+  <div class="checkpoint-icon">🏁</div>
+  <div class="checkpoint-text"><strong>Phase 1 Checkpoint</strong> — Build a task list app with add, delete, reorder, and a toggle for completion. No ViewModel yet — pure @State. Must survive dark mode and small screen.</div>
+</div>
+
+<!-- ═══════════════════════════════ PHASE 2 ═══════════════════════════════ -->
+<div class="phase-header" id="phase-2">
+  <span class="ph-num">Phase 02</span>
+  <h2>Navigation & Data Flow</h2>
+  <span class="ph-days">~14–18 days</span>
+</div>
+
+<div class="topic" id="navigation">
+  <div class="topic-head">
+    <div class="topic-icon">🧭</div>
+    <div>
+      <div class="topic-title">Navigation — NavigationStack, Sheets, Tabs</div>
+      <div class="topic-badges">
+        <span class="badge b-medium">Medium</span>
+        <span class="badge b-days">4–6 days</span>
+        <span class="badge b-tag">Navigation</span>
+      </div>
+    </div>
+  </div>
+  <div class="topic-body">
+    <p><code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">NavigationStack</code> is the modern navigation (iOS 16+) — it uses a path array to represent the back stack, like Compose Navigation's NavController. <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">NavigationLink</code> pushes a new view. Deep linking works by populating the path. <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">.sheet()</code> presents a modal. <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">.fullScreenCover()</code> covers the whole screen. <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">TabView</code> creates a bottom tab bar. <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">.navigationTitle()</code> sets the header title.</p>
+    <div class="kotlin-note">NavController backstack → NavigationStack path · BottomNavigation → TabView · Dialog → .sheet()</div>
+  </div>
+  <div class="topic-concepts">
+    <div class="concepts-label">Key Concepts</div>
+    <div class="concepts-list">
+      <span class="concept">NavigationStack</span><span class="concept">NavigationLink</span><span class="concept">navigationDestination</span><span class="concept">.sheet()</span><span class="concept">.fullScreenCover()</span><span class="concept">TabView</span><span class="concept">@Environment(\.dismiss)</span>
+    </div>
+  </div>
+</div>
+
+<div class="topic" id="observable">
+  <div class="topic-head">
+    <div class="topic-icon">🔭</div>
+    <div>
+      <div class="topic-title">@Observable, @ObservableObject — ViewModels</div>
+      <div class="topic-badges">
+        <span class="badge b-medium">Medium</span>
+        <span class="badge b-days">4–6 days</span>
+        <span class="badge b-tag">State Management</span>
+        <span class="badge b-new">Critical</span>
+      </div>
+    </div>
+  </div>
+  <div class="topic-body">
+    <p>For shared, business-logic state use a class marked <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">@Observable</code> (iOS 17+, modern) or <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">ObservableObject</code> with <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">@Published</code> (iOS 14+). This is SwiftUI's ViewModel. Use <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rpm;border-radius:3px;color:#f9a8d4">@StateObject</code> to own it, <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">@ObservedObject</code> to receive it. <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">@EnvironmentObject</code> injects it globally — like Compose's CompositionLocalProvider. Never create an <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">@ObservedObject</code> inside the view body — it will reset on recomposition.</p>
+    <div class="kotlin-note">ViewModel + StateFlow → @Observable class · collectAsState() → @ObservedObject · CompositionLocal → @EnvironmentObject</div>
+  </div>
+  <div class="topic-concepts">
+    <div class="concepts-label">Key Concepts</div>
+    <div class="concepts-list">
+      <span class="concept">@Observable</span><span class="concept">ObservableObject</span><span class="concept">@Published</span><span class="concept">@StateObject</span><span class="concept">@ObservedObject</span><span class="concept">@EnvironmentObject</span><span class="concept">@Environment</span>
+    </div>
+  </div>
+</div>
+
+<div class="topic" id="async-await">
+  <div class="topic-head">
+    <div class="topic-icon">⏳</div>
+    <div>
+      <div class="topic-title">async/await & Concurrency</div>
+      <div class="topic-badges">
+        <span class="badge b-medium">Medium</span>
+        <span class="badge b-days">3–5 days</span>
+        <span class="badge b-tag">Concurrency</span>
+      </div>
+    </div>
+  </div>
+  <div class="topic-body">
+    <p>Swift's <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">async/await</code> is conceptually identical to Kotlin coroutines — suspend functions become <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">async func</code>. <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">Task { }</code> launches a coroutine. <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">await</code> suspends. <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">async let</code> = parallel execution (like <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">async {}</code> in Kotlin). <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">@MainActor</code> ensures UI updates on main thread — like <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">withContext(Dispatchers.Main)</code>. SwiftUI's <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">.task { }</code> modifier launches a Task tied to the view's lifetime — auto-cancelled when view disappears.</p>
+    <div class="kotlin-note">suspend fun → async func · coroutineScope → TaskGroup · Dispatchers.Main → @MainActor · LaunchedEffect → .task { }</div>
+  </div>
+  <div class="topic-concepts">
+    <div class="concepts-label">Key Concepts</div>
+    <div class="concepts-list">
+      <span class="concept">async func</span><span class="concept">await</span><span class="concept">Task { }</span><span class="concept">async let</span><span class="concept">@MainActor</span><span class="concept">.task modifier</span><span class="concept">TaskGroup</span><span class="concept">Actor</span>
+    </div>
+  </div>
+</div>
+
+<div class="checkpoint">
+  <div class="checkpoint-icon">🏁</div>
+  <div class="checkpoint-text"><strong>Phase 2 Checkpoint</strong> — Build a multi-screen app with tab navigation, a push-detail screen, a sheet modal, and an @Observable ViewModel that fetches data asynchronously. Data must survive tab switches.</div>
+</div>
+
+<!-- ═══════════════════════════════ PHASE 3 ═══════════════════════════════ -->
+<div class="phase-header" id="phase-3">
+  <span class="ph-num">Phase 03</span>
+  <h2>Networking & Data Persistence</h2>
+  <span class="ph-days">~14–20 days</span>
+</div>
+
+<div class="topic" id="networking">
+  <div class="topic-head">
+    <div class="topic-icon">🌐</div>
+    <div>
+      <div class="topic-title">Networking — URLSession, REST APIs</div>
+      <div class="topic-badges">
+        <span class="badge b-medium">Medium</span>
+        <span class="badge b-days">4–6 days</span>
+        <span class="badge b-tag">Networking</span>
+      </div>
+    </div>
+  </div>
+  <div class="topic-body">
+    <p>iOS networking uses <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">URLSession</code> — no Retrofit, no Ktor. Make a request with <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">URLSession.shared.data(from: url)</code> which is async. Decode the response with <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">JSONDecoder</code> into your Codable model. Error handling uses Swift's <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">try/catch</code> — async functions throw errors. Build a clean network layer with a <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">NetworkService</code> class. Use <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">URLRequest</code> for POST/headers/auth. Handle 401, 404, 500 with typed errors.</p>
+    <div class="kotlin-note">Retrofit/Ktor → URLSession · @Serializable → Codable · Result&lt;T,E&gt; → throws / try-catch</div>
+  </div>
+  <div class="topic-concepts">
+    <div class="concepts-label">Key Concepts</div>
+    <div class="concepts-list">
+      <span class="concept">URLSession</span><span class="concept">URLRequest</span><span class="concept">JSONDecoder</span><span class="concept">Codable models</span><span class="concept">try / catch</span><span class="concept">async data(from:)</span><span class="concept">HTTP headers</span><span class="concept">error types</span>
+    </div>
+  </div>
+</div>
+
+<div class="topic" id="swiftdata">
+  <div class="topic-head">
+    <div class="topic-icon">💾</div>
+    <div>
+      <div class="topic-title">SwiftData & Core Data — Local Persistence</div>
+      <div class="topic-badges">
+        <span class="badge b-medium">Medium</span>
+        <span class="badge b-days">4–6 days</span>
+        <span class="badge b-tag">Persistence</span>
+        <span class="badge b-new">Modern</span>
+      </div>
+    </div>
+  </div>
+  <div class="topic-body">
+    <p><code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">SwiftData</code> (iOS 17+) is the modern ORM — mark your model with <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">@Model</code> and it handles persistence automatically. Like Room but with zero boilerplate. <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">@Query</code> in your view fetches and updates live. Use <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">modelContext.insert()</code> and <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">modelContext.delete()</code>. For iOS 16 support, learn Core Data basics — it is the predecessor. <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">UserDefaults</code> = <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">SharedPreferences</code> for simple key-value storage.</p>
+    <div class="kotlin-note">Room @Entity → @Model · DAO queries → @Query · SharedPreferences → UserDefaults</div>
+  </div>
+  <div class="topic-concepts">
+    <div class="concepts-label">Key Concepts</div>
+    <div class="concepts-list">
+      <span class="concept">@Model</span><span class="concept">@Query</span><span class="concept">ModelContainer</span><span class="concept">modelContext</span><span class="concept">UserDefaults</span><span class="concept">@AppStorage</span><span class="concept">Core Data basics</span><span class="concept">relationships</span>
+    </div>
+  </div>
+</div>
+
+<div class="topic" id="keychain">
+  <div class="topic-head">
+    <div class="topic-icon">🔐</div>
+    <div>
+      <div class="topic-title">Keychain & Secure Storage</div>
+      <div class="topic-badges">
+        <span class="badge b-medium">Medium</span>
+        <span class="badge b-days">2–3 days</span>
+        <span class="badge b-tag">Security</span>
+      </div>
+    </div>
+  </div>
+  <div class="topic-body">
+    <p>The Keychain is iOS's secure credential store — encrypted by the OS, survives app reinstalls, locked when device is locked. Use it for tokens, passwords, and sensitive keys. Never store these in UserDefaults. The raw Keychain API is verbose C-style — use a wrapper library like <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">KeychainSwift</code> or write a thin wrapper yourself. Keychain items have access control — <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">kSecAttrAccessibleWhenUnlocked</code> is the safest default.</p>
+    <div class="kotlin-note">EncryptedSharedPreferences → Keychain · same threat model, different API</div>
+  </div>
+  <div class="topic-concepts">
+    <div class="concepts-label">Key Concepts</div>
+    <div class="concepts-list">
+      <span class="concept">Keychain Services</span><span class="concept">kSecAttrAccessible</span><span class="concept">SecItemAdd</span><span class="concept">SecItemCopyMatching</span><span class="concept">access groups</span>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════ PHASE 4 ═══════════════════════════════ -->
+<div class="phase-header" id="phase-4">
+  <span class="ph-num">Phase 04</span>
+  <h2>Animations & Gestures</h2>
+  <span class="ph-days">~10–14 days</span>
+</div>
+
+<div class="topic" id="animations">
+  <div class="topic-head">
+    <div class="topic-icon">✨</div>
+    <div>
+      <div class="topic-title">Animations — Implicit, Explicit, Transitions</div>
+      <div class="topic-badges">
+        <span class="badge b-medium">Medium</span>
+        <span class="badge b-days">4–6 days</span>
+        <span class="badge b-tag">UI Polish</span>
+      </div>
+    </div>
+  </div>
+  <div class="topic-body">
+    <p>Implicit animations: add <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">.animation(.easeInOut, value: someState)</code> — SwiftUI animates any change to that value automatically. Explicit animations: <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">withAnimation { state = newValue }</code> wraps state changes. <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">Transition</code> controls how views appear/disappear — <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">.slide</code>, <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">.scale</code>, <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">.opacity</code>. <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">matchedGeometryEffect</code> creates hero animations between views. Spring animations feel native and are preferred over linear.</p>
+    <div class="kotlin-note">animateAsState → .animation(value:) · AnimatedVisibility → .transition() · SharedElement → matchedGeometryEffect</div>
+  </div>
+  <div class="topic-concepts">
+    <div class="concepts-label">Key Concepts</div>
+    <div class="concepts-list">
+      <span class="concept">.animation()</span><span class="concept">withAnimation</span><span class="concept">.transition()</span><span class="concept">matchedGeometryEffect</span><span class="concept">spring()</span><span class="concept">Namespace</span><span class="concept">keyframe animations</span>
+    </div>
+  </div>
+</div>
+
+<div class="topic" id="gestures">
+  <div class="topic-head">
+    <div class="topic-icon">👆</div>
+    <div>
+      <div class="topic-title">Gestures — Tap, Drag, Long Press, Pinch</div>
+      <div class="topic-badges">
+        <span class="badge b-medium">Medium</span>
+        <span class="badge b-days">3–4 days</span>
+        <span class="badge b-tag">Interaction</span>
+      </div>
+    </div>
+  </div>
+  <div class="topic-body">
+    <p>SwiftUI gestures attach to any view via modifiers. <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">.onTapGesture</code> for taps. <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">DragGesture</code> gives you translation and velocity for drag-to-dismiss cards. <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">MagnificationGesture</code> for pinch-to-zoom. <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">LongPressGesture</code> for context menus. Combine gestures with <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">.simultaneously</code>, <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">.sequenced</code>, or <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">.exclusively</code>. Use <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">@GestureState</code> to track gesture progress without triggering full redraws.</p>
+  </div>
+  <div class="topic-concepts">
+    <div class="concepts-label">Key Concepts</div>
+    <div class="concepts-list">
+      <span class="concept">TapGesture</span><span class="concept">DragGesture</span><span class="concept">MagnificationGesture</span><span class="concept">LongPressGesture</span><span class="concept">@GestureState</span><span class="concept">.simultaneousGesture</span>
+    </div>
+  </div>
+</div>
+
+<div class="topic" id="canvas">
+  <div class="topic-head">
+    <div class="topic-icon">🎨</div>
+    <div>
+      <div class="topic-title">Canvas & Custom Drawing</div>
+      <div class="topic-badges">
+        <span class="badge b-medium">Medium</span>
+        <span class="badge b-days">3–4 days</span>
+        <span class="badge b-tag">Custom UI</span>
+      </div>
+    </div>
+  </div>
+  <div class="topic-body">
+    <p>SwiftUI's <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">Canvas</code> view lets you draw paths, shapes, and images using a <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">GraphicsContext</code>. Think Android's <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">Canvas</code> with <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">DrawScope</code>. Use <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">Path</code> to define shapes with bezier curves, arcs, lines. Built-in shapes: <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">Circle</code>, <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">RoundedRectangle</code>, <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">Capsule</code>. Custom shapes by conforming to the <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">Shape</code> protocol. TimelineView drives animated canvas at 60fps.</p>
+    <div class="kotlin-note">Compose Canvas/DrawScope → SwiftUI Canvas/GraphicsContext · Path is nearly identical API</div>
+  </div>
+  <div class="topic-concepts">
+    <div class="concepts-label">Key Concepts</div>
+    <div class="concepts-list">
+      <span class="concept">Canvas</span><span class="concept">GraphicsContext</span><span class="concept">Path</span><span class="concept">Shape protocol</span><span class="concept">TimelineView</span><span class="concept">stroke / fill</span>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════ PHASE 5 ═══════════════════════════════ -->
+<div class="phase-header" id="phase-5">
+  <span class="ph-num">Phase 05</span>
+  <h2>Hardware & Device Features</h2>
+  <span class="ph-days">~18–26 days</span>
+</div>
+
+<div class="topic" id="camera">
+  <div class="topic-head">
+    <div class="topic-icon">📷</div>
+    <div>
+      <div class="topic-title">Camera & Photo Library</div>
+      <div class="topic-badges">
+        <span class="badge b-medium">Medium</span>
+        <span class="badge b-days">4–6 days</span>
+        <span class="badge b-tag">Hardware</span>
+      </div>
+    </div>
+  </div>
+  <div class="topic-body">
+    <p>Two paths: <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">PhotosPicker</code> (SwiftUI, iOS 16+) for selecting photos/videos from the library — zero permission needed. <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">UIImagePickerController</code> (UIKit, wrapped) for camera capture. For full camera control use <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">AVFoundation</code> — <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">AVCaptureSession</code>, <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">AVCapturePhotoOutput</code>. Add <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">NSCameraUsageDescription</code> to Info.plist — Apple rejects apps without it. Transfer photo data using <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">PhotosUI</code> framework's <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">loadTransferable</code>.</p>
+    <div class="kotlin-note">CameraX → AVFoundation · rememberLauncherForActivityResult(GetContent) → PhotosPicker</div>
+  </div>
+  <div class="topic-concepts">
+    <div class="concepts-label">Key Concepts</div>
+    <div class="concepts-list">
+      <span class="concept">PhotosPicker</span><span class="concept">AVCaptureSession</span><span class="concept">AVFoundation</span><span class="concept">PhotosUI</span><span class="concept">loadTransferable</span><span class="concept">NSCameraUsageDescription</span>
+    </div>
+  </div>
+</div>
+
+<div class="topic" id="location">
+  <div class="topic-head">
+    <div class="topic-icon">📍</div>
+    <div>
+      <div class="topic-title">Location & Maps</div>
+      <div class="topic-badges">
+        <span class="badge b-medium">Medium</span>
+        <span class="badge b-days">3–4 days</span>
+        <span class="badge b-tag">Hardware</span>
+      </div>
+    </div>
+  </div>
+  <div class="topic-body">
+    <p><code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">CoreLocation</code> handles GPS — <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">CLLocationManager</code> requests permission and delivers location updates. iOS has 4 permission levels: when-in-use, always, reduced accuracy, precise. Always start with when-in-use. <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">MapKit</code> renders maps with <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">Map</code> view (SwiftUI native). Add pins with <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">Marker</code> and <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">Annotation</code>. Geocoding with <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">CLGeocoder</code>. Add <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">NSLocationWhenInUseUsageDescription</code> to Info.plist.</p>
+    <div class="kotlin-note">FusedLocationProvider → CLLocationManager · Google Maps SDK → MapKit Map view</div>
+  </div>
+  <div class="topic-concepts">
+    <div class="concepts-label">Key Concepts</div>
+    <div class="concepts-list">
+      <span class="concept">CLLocationManager</span><span class="concept">CLLocation</span><span class="concept">Map view</span><span class="concept">Marker / Annotation</span><span class="concept">CLGeocoder</span><span class="concept">location permissions</span><span class="concept">background location</span>
+    </div>
+  </div>
+</div>
+
+<div class="topic" id="sensors">
+  <div class="topic-head">
+    <div class="topic-icon">📡</div>
+    <div>
+      <div class="topic-title">Sensors — Motion, Accelerometer, Gyroscope</div>
+      <div class="topic-badges">
+        <span class="badge b-easy">Easy</span>
+        <span class="badge b-days">2–3 days</span>
+        <span class="badge b-tag">Hardware</span>
+      </div>
+    </div>
+  </div>
+  <div class="topic-body">
+    <p><code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">CoreMotion</code> gives access to all motion sensors via <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">CMMotionManager</code>. Accelerometer, gyroscope, magnetometer, device motion (fused), step counter (<code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">CMPedometer</code>). Always check <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">isAccelerometerAvailable</code> before starting — simulators don't have sensors. Stop updates in <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">onDisappear</code> or they drain battery. Update interval controls frequency — <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">1.0/60</code> for 60Hz.</p>
+    <div class="kotlin-note">SensorManager → CMMotionManager · registerListener → startAccelerometerUpdates · unregisterListener → stopAccelerometerUpdates</div>
+  </div>
+  <div class="topic-concepts">
+    <div class="concepts-label">Key Concepts</div>
+    <div class="concepts-list">
+      <span class="concept">CMMotionManager</span><span class="concept">accelerometer</span><span class="concept">gyroscope</span><span class="concept">CMPedometer</span><span class="concept">deviceMotion</span><span class="concept">update interval</span>
+    </div>
+  </div>
+</div>
+
+<div class="topic" id="biometrics">
+  <div class="topic-head">
+    <div class="topic-icon">🔏</div>
+    <div>
+      <div class="topic-title">Biometrics — Face ID & Touch ID</div>
+      <div class="topic-badges">
+        <span class="badge b-easy">Easy</span>
+        <span class="badge b-days">1–2 days</span>
+        <span class="badge b-tag">Security</span>
+      </div>
+    </div>
+  </div>
+  <div class="topic-body">
+    <p><code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">LocalAuthentication</code> framework. <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">LAContext</code> evaluates biometric policy with a reason string shown to the user. Add <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">NSFaceIDUsageDescription</code> to Info.plist or the app crashes. Check <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">biometryType</code> to know if the device has Face ID or Touch ID. The API is async — handle <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">LAError</code> cases especially <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">.userCancel</code> and <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">.biometryNotEnrolled</code>.</p>
+    <div class="kotlin-note">BiometricPrompt → LAContext · BiometricManager → LAContext.canEvaluatePolicy</div>
+  </div>
+  <div class="topic-concepts">
+    <div class="concepts-label">Key Concepts</div>
+    <div class="concepts-list">
+      <span class="concept">LAContext</span><span class="concept">evaluatePolicy</span><span class="concept">biometryType</span><span class="concept">LAError handling</span><span class="concept">NSFaceIDUsageDescription</span>
+    </div>
+  </div>
+</div>
+
+<div class="topic" id="nfc-bluetooth">
+  <div class="topic-head">
+    <div class="topic-icon">📶</div>
+    <div>
+      <div class="topic-title">NFC & Bluetooth</div>
+      <div class="topic-badges">
+        <span class="badge b-hard">Hard</span>
+        <span class="badge b-days">4–6 days</span>
+        <span class="badge b-tag">Hardware</span>
+      </div>
+    </div>
+  </div>
+  <div class="topic-body">
+    <p>NFC reading uses <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">CoreNFC</code> — <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">NFCTagReaderSession</code> for reading tags. iOS can read NFC but not emulate (no HCE like Android). Add <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">NFCReaderUsageDescription</code> to Info.plist. Bluetooth uses <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">CoreBluetooth</code> — <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">CBCentralManager</code> scans and connects, <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">CBPeripheralManager</code> advertises. BLE (Bluetooth Low Energy) is the default on modern iOS. State restoration lets BLE connections survive app termination.</p>
+    <div class="kotlin-note">iOS has no HCE — NFC write not possible · BluetoothAdapter → CBCentralManager · BLE API is very similar conceptually</div>
+  </div>
+  <div class="topic-concepts">
+    <div class="concepts-label">Key Concepts</div>
+    <div class="concepts-list">
+      <span class="concept">CoreNFC</span><span class="concept">NFCTagReaderSession</span><span class="concept">CoreBluetooth</span><span class="concept">CBCentralManager</span><span class="concept">CBPeripheral</span><span class="concept">BLE services/characteristics</span>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════ PHASE 6 ═══════════════════════════════ -->
+<div class="phase-header" id="phase-6">
+  <span class="ph-num">Phase 06</span>
+  <h2>Notifications</h2>
+  <span class="ph-days">~8–12 days</span>
+</div>
+
+<div class="topic" id="local-notifications">
+  <div class="topic-head">
+    <div class="topic-icon">🔔</div>
+    <div>
+      <div class="topic-title">Local Notifications</div>
+      <div class="topic-badges">
+        <span class="badge b-easy">Easy</span>
+        <span class="badge b-days">2–3 days</span>
+        <span class="badge b-tag">Notifications</span>
+      </div>
+    </div>
+  </div>
+  <div class="topic-body">
+    <p>Use <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">UNUserNotificationCenter</code> for all local notifications. Request permission first — users can deny. Schedule with <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">UNTimeIntervalNotificationTrigger</code> (after X seconds), <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">UNCalendarNotificationTrigger</code> (at a date), or <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">UNLocationNotificationTrigger</code> (on geofence). Add notification actions (buttons in the notification). Use <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">UNUserNotificationCenterDelegate</code> to handle foreground delivery and taps.</p>
+    <div class="kotlin-note">NotificationManager → UNUserNotificationCenter · NotificationCompat.Builder → UNMutableNotificationContent</div>
+  </div>
+  <div class="topic-concepts">
+    <div class="concepts-label">Key Concepts</div>
+    <div class="concepts-list">
+      <span class="concept">UNUserNotificationCenter</span><span class="concept">UNNotificationRequest</span><span class="concept">triggers (time/calendar/location)</span><span class="concept">notification actions</span><span class="concept">UNNotificationDelegate</span><span class="concept">badge count</span>
+    </div>
+  </div>
+</div>
+
+<div class="topic" id="push-notifications">
+  <div class="topic-head">
+    <div class="topic-icon">📲</div>
+    <div>
+      <div class="topic-title">Push Notifications — APNs & Firebase</div>
+      <div class="topic-badges">
+        <span class="badge b-hard">Hard</span>
+        <span class="badge b-days">4–6 days</span>
+        <span class="badge b-tag">Notifications</span>
+      </div>
+    </div>
+  </div>
+  <div class="topic-body">
+    <p>Apple Push Notification Service (APNs) is iOS's push system — the equivalent of FCM but lower level. Most apps use <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">Firebase Cloud Messaging</code> which wraps APNs. You MUST have an Apple Developer account ($99/year). Flow: register device → get APNs token → send token to your server → server sends push via APNs/FCM. <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">UNNotificationServiceExtension</code> lets you modify push payloads before display — used for rich notifications with images. <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">UNNotificationContentExtension</code> creates custom notification UI.</p>
+    <div class="kotlin-note">FCM is the same — it wraps APNs just as it wraps FCM on Android. Token registration flow is identical.</div>
+  </div>
+  <div class="topic-concepts">
+    <div class="concepts-label">Key Concepts</div>
+    <div class="concepts-list">
+      <span class="concept">APNs</span><span class="concept">device token</span><span class="concept">push entitlement</span><span class="concept">UNNotificationServiceExtension</span><span class="concept">silent push</span><span class="concept">background push</span><span class="concept">FCM on iOS</span>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════ PHASE 7 ═══════════════════════════════ -->
+<div class="phase-header" id="phase-7">
+  <span class="ph-num">Phase 07</span>
+  <h2>Background Execution</h2>
+  <span class="ph-days">~10–14 days</span>
+</div>
+
+<div class="topic" id="background-tasks">
+  <div class="topic-head">
+    <div class="topic-icon">⚙️</div>
+    <div>
+      <div class="topic-title">Background Tasks — BGTaskScheduler</div>
+      <div class="topic-badges">
+        <span class="badge b-hard">Hard</span>
+        <span class="badge b-days">4–6 days</span>
+        <span class="badge b-tag">Background</span>
+        <span class="badge b-new">Critical</span>
+      </div>
+    </div>
+  </div>
+  <div class="topic-body">
+    <p>iOS is extremely aggressive about killing background apps — this is the biggest difference from Android. <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">BGTaskScheduler</code> is the modern API (iOS 13+) — equivalent to WorkManager. Two types: <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">BGAppRefreshTask</code> (short, 30 seconds max — for refreshing content) and <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">BGProcessingTask</code> (longer, minutes — for heavy sync). iOS decides WHEN to run them based on battery, usage patterns, and connectivity. You cannot force them to run at an exact time. Register identifiers in Info.plist. Always call <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">task.setTaskCompleted(success:)</code> or iOS penalises future scheduling.</p>
+    <div class="kotlin-note">WorkManager → BGTaskScheduler · PeriodicWorkRequest → BGAppRefreshTask · The key difference: iOS controls WHEN it runs, you don't.</div>
+  </div>
+  <div class="topic-concepts">
+    <div class="concepts-label">Key Concepts</div>
+    <div class="concepts-list">
+      <span class="concept">BGTaskScheduler</span><span class="concept">BGAppRefreshTask</span><span class="concept">BGProcessingTask</span><span class="concept">task identifier</span><span class="concept">setTaskCompleted</span><span class="concept">expiration handler</span>
+    </div>
+  </div>
+</div>
+
+<div class="topic" id="background-modes">
+  <div class="topic-head">
+    <div class="topic-icon">🌙</div>
+    <div>
+      <div class="topic-title">Background Modes — Audio, Location, VOIP, Fetch</div>
+      <div class="topic-badges">
+        <span class="badge b-hard">Hard</span>
+        <span class="badge b-days">3–5 days</span>
+        <span class="badge b-tag">Background</span>
+      </div>
+    </div>
+  </div>
+  <div class="topic-body">
+    <p>Some apps are allowed to run in background indefinitely with special entitlements declared in capabilities. <strong>Audio</strong>: music/podcast players stay alive playing audio. <strong>Location</strong>: navigation apps receive continuous location updates. <strong>VoIP</strong>: calls apps stay alive for incoming calls. <strong>Background fetch</strong>: periodic content refresh. <strong>Remote notifications</strong>: silent push wakes the app for 30 seconds. You must justify each capability to Apple during review — adding them without a genuine reason causes rejection. Foreground services don't exist on iOS.</p>
+    <div class="kotlin-note">Foreground Service does NOT exist on iOS. Background Modes are the closest — but far more restricted and require Apple approval.</div>
+  </div>
+  <div class="topic-concepts">
+    <div class="concepts-label">Key Concepts</div>
+    <div class="concepts-list">
+      <span class="concept">Background Modes capability</span><span class="concept">audio background</span><span class="concept">location background</span><span class="concept">VoIP push</span><span class="concept">URLSession background</span><span class="concept">silent push</span>
+    </div>
+  </div>
+</div>
+
+<div class="topic" id="url-session-background">
+  <div class="topic-head">
+    <div class="topic-icon">📥</div>
+    <div>
+      <div class="topic-title">Background Downloads & Uploads</div>
+      <div class="topic-badges">
+        <span class="badge b-medium">Medium</span>
+        <span class="badge b-days">2–3 days</span>
+        <span class="badge b-tag">Background</span>
+      </div>
+    </div>
+  </div>
+  <div class="topic-body">
+    <p><code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">URLSession</code> with a background configuration (<code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">URLSessionConfiguration.background(withIdentifier:)</code>) continues downloads even if your app is killed. iOS handles the download and wakes your app when done via <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">application(_:handleEventsForBackgroundURLSession:)</code>. Use this for large file downloads. Progress updates come via delegates. The background identifier must match between sessions for reconnection after app relaunch.</p>
+    <div class="kotlin-note">DownloadManager → URLSession background configuration · Same mental model: OS handles the download, notifies you when done.</div>
+  </div>
+  <div class="topic-concepts">
+    <div class="concepts-label">Key Concepts</div>
+    <div class="concepts-list">
+      <span class="concept">background URLSession</span><span class="concept">URLSessionDownloadTask</span><span class="concept">session identifier</span><span class="concept">handleEventsForBackgroundURLSession</span><span class="concept">URLSessionDelegate</span>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════ PHASE 8 ═══════════════════════════════ -->
+<div class="phase-header" id="phase-8">
+  <span class="ph-num">Phase 08</span>
+  <h2>Home Screen Widgets (WidgetKit)</h2>
+  <span class="ph-days">~12–16 days</span>
+</div>
+
+<div class="topic" id="widgetkit-basics">
+  <div class="topic-head">
+    <div class="topic-icon">🧩</div>
+    <div>
+      <div class="topic-title">WidgetKit Basics — Timeline & Entry</div>
+      <div class="topic-badges">
+        <span class="badge b-medium">Medium</span>
+        <span class="badge b-days">4–5 days</span>
+        <span class="badge b-tag">Widgets</span>
+        <span class="badge b-new">iOS Unique</span>
+      </div>
+    </div>
+  </div>
+  <div class="topic-body">
+    <p>iOS widgets use <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">WidgetKit</code> — completely different from Android's RemoteViews/Glance. The key concept: widgets are <strong>not live views</strong>. You provide a <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">Timeline</code> — a sequence of <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">TimelineEntry</code> snapshots with associated dates. iOS renders each snapshot at the right time, like a flipbook. Your widget view is SwiftUI — much nicer than RemoteViews. A <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">TimelineProvider</code> has three methods: <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">placeholder</code>, <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">getSnapshot</code>, <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">getTimeline</code>. Reload policy controls when iOS asks for a new timeline.</p>
+    <div class="kotlin-note">Completely different from Android widgets. No RemoteViews. Pure SwiftUI views. Timeline = pre-rendered snapshots, not live updates.</div>
+  </div>
+  <div class="topic-concepts">
+    <div class="concepts-label">Key Concepts</div>
+    <div class="concepts-list">
+      <span class="concept">TimelineProvider</span><span class="concept">TimelineEntry</span><span class="concept">Timeline</span><span class="concept">getTimeline</span><span class="concept">ReloadPolicy</span><span class="concept">WidgetFamily (small/medium/large)</span><span class="concept">@main Widget</span>
+    </div>
+  </div>
+</div>
+
+<div class="topic" id="widget-config">
+  <div class="topic-head">
+    <div class="topic-icon">⚙️</div>
+    <div>
+      <div class="topic-title">Widget Configuration & Intents</div>
+      <div class="topic-badges">
+        <span class="badge b-hard">Hard</span>
+        <span class="badge b-days">4–5 days</span>
+        <span class="badge b-tag">Widgets</span>
+      </div>
+    </div>
+  </div>
+  <div class="topic-body">
+    <p>Static widgets: no configuration. Configurable widgets use <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">AppIntentConfiguration</code> (iOS 17+, modern) or <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">IntentConfiguration</code> (iOS 14+). The user long-presses the widget to configure it — like Android's config Activity but built into iOS. <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">AppIntent</code> defines the parameters. Widget taps use <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">Link</code> or <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">widgetURL</code> to deep link into the app. <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">WidgetCenter.shared.reloadAllTimelines()</code> forces a refresh from inside the app.</p>
+  </div>
+  <div class="topic-concepts">
+    <div class="concepts-label">Key Concepts</div>
+    <div class="concepts-list">
+      <span class="concept">AppIntentConfiguration</span><span class="concept">AppIntent</span><span class="concept">widgetURL</span><span class="concept">Link in widget</span><span class="concept">WidgetCenter.reloadTimelines</span><span class="concept">App Group (shared data)</span>
+    </div>
+  </div>
+</div>
+
+<div class="topic" id="live-activities">
+  <div class="topic-head">
+    <div class="topic-icon">🏃</div>
+    <div>
+      <div class="topic-title">Live Activities & Dynamic Island</div>
+      <div class="topic-badges">
+        <span class="badge b-hard">Hard</span>
+        <span class="badge b-days">3–4 days</span>
+        <span class="badge b-tag">Widgets</span>
+        <span class="badge b-new">iOS Unique</span>
+      </div>
+    </div>
+  </div>
+  <div class="topic-body">
+    <p>Live Activities show real-time information on the Lock Screen and Dynamic Island (iPhone 14 Pro+). Use <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">ActivityKit</code>. Define an <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">ActivityAttributes</code> struct for static data and a nested <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">ContentState</code> for dynamic data. Start with <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">Activity.request()</code>, update with <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">activity.update()</code>, end with <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">activity.end()</code>. Can also be updated via push notifications. No Android equivalent — this is uniquely iOS.</p>
+  </div>
+  <div class="topic-concepts">
+    <div class="concepts-label">Key Concepts</div>
+    <div class="concepts-list">
+      <span class="concept">ActivityKit</span><span class="concept">ActivityAttributes</span><span class="concept">ContentState</span><span class="concept">Activity.request()</span><span class="concept">Dynamic Island compact/expanded</span><span class="concept">Lock Screen widget</span>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════ PHASE 9 ═══════════════════════════════ -->
+<div class="phase-header" id="phase-9">
+  <span class="ph-num">Phase 09</span>
+  <h2>Deep Linking, Files & Sharing</h2>
+  <span class="ph-days">~8–12 days</span>
+</div>
+
+<div class="topic" id="deep-links">
+  <div class="topic-head">
+    <div class="topic-icon">🔗</div>
+    <div>
+      <div class="topic-title">Deep Links & Universal Links</div>
+      <div class="topic-badges">
+        <span class="badge b-medium">Medium</span>
+        <span class="badge b-days">3–4 days</span>
+        <span class="badge b-tag">Platform</span>
+      </div>
+    </div>
+  </div>
+  <div class="topic-body">
+    <p>Two systems: <strong>URL Schemes</strong> (<code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">myapp://</code>) — simple but any app can claim the same scheme. <strong>Universal Links</strong> (<code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">https://yourdomain.com/path</code>) — verified ownership via <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">apple-app-site-association</code> file hosted on your server. Universal Links are the modern standard — they fall back to a website if the app isn't installed. Handle in SwiftUI with <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">.onOpenURL</code> modifier. NavigationStack path enables programmatic deep navigation.</p>
+    <div class="kotlin-note">App Links (Digital Asset Links) → Universal Links · Intent filters → Info.plist URL types · .onOpenURL → LaunchedEffect + intent handling</div>
+  </div>
+  <div class="topic-concepts">
+    <div class="concepts-label">Key Concepts</div>
+    <div class="concepts-list">
+      <span class="concept">URL Schemes</span><span class="concept">Universal Links</span><span class="concept">apple-app-site-association</span><span class="concept">.onOpenURL</span><span class="concept">Associated Domains entitlement</span>
+    </div>
+  </div>
+</div>
+
+<div class="topic" id="file-handling">
+  <div class="topic-head">
+    <div class="topic-icon">📁</div>
+    <div>
+      <div class="topic-title">File System & Document Picker</div>
+      <div class="topic-badges">
+        <span class="badge b-medium">Medium</span>
+        <span class="badge b-days">2–3 days</span>
+        <span class="badge b-tag">Platform</span>
+      </div>
+    </div>
+  </div>
+  <div class="topic-body">
+    <p>iOS sandboxes every app — you can only access your own container by default. Key directories: <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">Documents</code> (user-visible, backed up), <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">Library/Caches</code> (temporary, not backed up), <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">tmp</code> (deleted by OS freely). Use <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">FileManager</code> for all file operations. <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">UIDocumentPickerViewController</code> (wrapped in SwiftUI) lets users pick files from Files app. Use <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">ShareLink</code> for the native share sheet.</p>
+    <div class="kotlin-note">Scoped storage → iOS sandbox · MediaStore → Photos/Files via pickers · ShareSheet → ShareLink</div>
+  </div>
+  <div class="topic-concepts">
+    <div class="concepts-label">Key Concepts</div>
+    <div class="concepts-list">
+      <span class="concept">FileManager</span><span class="concept">Documents directory</span><span class="concept">Caches directory</span><span class="concept">document picker</span><span class="concept">ShareLink</span><span class="concept">App Group container</span>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════ PHASE 10 ═══════════════════════════════ -->
+<div class="phase-header" id="phase-10">
+  <span class="ph-num">Phase 10</span>
+  <h2>Performance & Architecture</h2>
+  <span class="ph-days">~12–16 days</span>
+</div>
+
+<div class="topic" id="performance">
+  <div class="topic-head">
+    <div class="topic-icon">⚡</div>
+    <div>
+      <div class="topic-title">Performance — Instruments, Memory, Redraws</div>
+      <div class="topic-badges">
+        <span class="badge b-hard">Hard</span>
+        <span class="badge b-days">4–6 days</span>
+        <span class="badge b-tag">Performance</span>
+      </div>
+    </div>
+  </div>
+  <div class="topic-body">
+    <p>Xcode Instruments is your profiler — equivalent to Android Studio's profiler. Use the <strong>Time Profiler</strong> for CPU, <strong>Allocations</strong> for memory leaks, <strong>SwiftUI</strong> instrument for excessive redraws. SwiftUI redraws the <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">body</code> of any view whose observed state changes — use <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">equatable()</code> to prevent unnecessary redraws. Break large views into smaller structs. Avoid creating objects in <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">body</code>. <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">@StateObject</code> vs <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">@ObservedObject</code> ownership matters for memory.</p>
+    <div class="kotlin-note">Android Studio Profiler → Instruments · recomposition debugging → SwiftUI Instrument · remember { } leaks → @StateObject lifetime</div>
+  </div>
+  <div class="topic-concepts">
+    <div class="concepts-label">Key Concepts</div>
+    <div class="concepts-list">
+      <span class="concept">Instruments</span><span class="concept">Time Profiler</span><span class="concept">Allocations</span><span class="concept">SwiftUI instrument</span><span class="concept">.equatable()</span><span class="concept">view identity</span><span class="concept">lazy loading</span>
+    </div>
+  </div>
+</div>
+
+<div class="topic" id="architecture">
+  <div class="topic-head">
+    <div class="topic-icon">🏛️</div>
+    <div>
+      <div class="topic-title">Architecture — MVVM, TCA, Clean</div>
+      <div class="topic-badges">
+        <span class="badge b-medium">Medium</span>
+        <span class="badge b-days">4–5 days</span>
+        <span class="badge b-tag">Architecture</span>
+      </div>
+    </div>
+  </div>
+  <div class="topic-body">
+    <p><strong>MVVM</strong> is the default SwiftUI pattern — <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">@Observable</code> class = ViewModel, View is the V, your model is the M. Identical to Android MVVM with StateFlow. <strong>TCA</strong> (The Composable Architecture) by Point-Free is popular for testability — State + Action + Reducer + Effect, like MVI/Redux. <strong>Clean Architecture</strong> layers (Presentation → Domain → Data) map directly from your Android knowledge. For solo apps, start with MVVM. Add TCA when you need strict testability.</p>
+    <div class="kotlin-note">MVI/Redux → TCA · ViewModel + StateFlow → @Observable class · Repository pattern is identical</div>
+  </div>
+  <div class="topic-concepts">
+    <div class="concepts-label">Key Concepts</div>
+    <div class="concepts-list">
+      <span class="concept">MVVM with @Observable</span><span class="concept">Repository pattern</span><span class="concept">dependency injection</span><span class="concept">TCA basics</span><span class="concept">Clean layers</span>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════ PHASE 11 ═══════════════════════════════ -->
+<div class="phase-header" id="phase-11">
+  <span class="ph-num">Phase 11</span>
+  <h2>Testing</h2>
+  <span class="ph-days">~10–14 days</span>
+</div>
+
+<div class="topic" id="unit-testing">
+  <div class="topic-head">
+    <div class="topic-icon">🧪</div>
+    <div>
+      <div class="topic-title">Unit Testing — XCTest</div>
+      <div class="topic-badges">
+        <span class="badge b-medium">Medium</span>
+        <span class="badge b-days">3–4 days</span>
+        <span class="badge b-tag">Testing</span>
+      </div>
+    </div>
+  </div>
+  <div class="topic-body">
+    <p><code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">XCTest</code> is the built-in test framework — <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">XCTestCase</code> subclass, <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">setUp</code>/<code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">tearDown</code>, <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">XCTAssert*</code> assertions. Async testing uses <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">async</code> test functions with <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">await</code>. Test ViewModels directly — they're plain classes. Use protocols for dependency injection so you can substitute fakes. <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">@testable import</code> exposes internal types. Swift Testing (new) is cleaner with <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">#expect</code> macro.</p>
+    <div class="kotlin-note">JUnit → XCTest · @Test → func test...() · assertEquals → XCTAssertEqual · runBlocking { } → async test function</div>
+  </div>
+  <div class="topic-concepts">
+    <div class="concepts-label">Key Concepts</div>
+    <div class="concepts-list">
+      <span class="concept">XCTestCase</span><span class="concept">XCTAssert*</span><span class="concept">async tests</span><span class="concept">@testable import</span><span class="concept">test doubles / fakes</span><span class="concept">Swift Testing</span>
+    </div>
+  </div>
+</div>
+
+<div class="topic" id="ui-testing">
+  <div class="topic-head">
+    <div class="topic-icon">🤖</div>
+    <div>
+      <div class="topic-title">UI Testing — XCUITest</div>
+      <div class="topic-badges">
+        <span class="badge b-medium">Medium</span>
+        <span class="badge b-days">3–4 days</span>
+        <span class="badge b-tag">Testing</span>
+      </div>
+    </div>
+  </div>
+  <div class="topic-body">
+    <p><code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">XCUITest</code> automates the actual app UI — launches the app on a simulator and interacts with it like a user. Find elements by accessibility identifier (<code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">.accessibilityIdentifier</code> modifier in your views). <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">app.buttons["Save"].tap()</code>. Slower than unit tests — use for critical user flows only. Use launch arguments to put the app in test state: <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">app.launchArguments = ["--uitesting"]</code>.</p>
+    <div class="kotlin-note">Espresso/UI Automator → XCUITest · contentDescription → .accessibilityIdentifier · onView(withText()) → app.staticTexts["text"]</div>
+  </div>
+  <div class="topic-concepts">
+    <div class="concepts-label">Key Concepts</div>
+    <div class="concepts-list">
+      <span class="concept">XCUIApplication</span><span class="concept">accessibilityIdentifier</span><span class="concept">element queries</span><span class="concept">launch arguments</span><span class="concept">screenshots</span>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════ PHASE 12 ═══════════════════════════════ -->
+<div class="phase-header" id="phase-12">
+  <span class="ph-num">Phase 12</span>
+  <h2>App Store Deployment</h2>
+  <span class="ph-days">~5–8 days</span>
+</div>
+
+<div class="topic" id="app-store">
+  <div class="topic-head">
+    <div class="topic-icon">🚀</div>
+    <div>
+      <div class="topic-title">Signing, Certificates & App Store Connect</div>
+      <div class="topic-badges">
+        <span class="badge b-hard">Hard</span>
+        <span class="badge b-days">3–5 days</span>
+        <span class="badge b-tag">Deployment</span>
+        <span class="badge b-new">One-time Pain</span>
+      </div>
+    </div>
+  </div>
+  <div class="topic-body">
+    <p>The most confusing part of iOS for Android developers. You need a <strong>$99/year Apple Developer account</strong>. Key concepts: <strong>Bundle ID</strong> (like application ID), <strong>Provisioning Profile</strong> (ties your app + device + certificate — no Android equivalent), <strong>Signing Certificate</strong> (proves it's you). Xcode handles most of this automatically with "Automatically manage signing" enabled. To submit: archive the app → upload via Xcode Organizer or Transporter → submit in App Store Connect. App review takes 24–48 hours on average. TestFlight is Apple's beta distribution (like Firebase App Distribution).</p>
+    <div class="kotlin-note">Google Play Console → App Store Connect · applicationId → Bundle ID · APK signing → Provisioning Profile + Certificate</div>
+  </div>
+  <div class="topic-concepts">
+    <div class="concepts-label">Key Concepts</div>
+    <div class="concepts-list">
+      <span class="concept">Bundle ID</span><span class="concept">Provisioning Profile</span><span class="concept">Signing Certificate</span><span class="concept">App Store Connect</span><span class="concept">TestFlight</span><span class="concept">archive / export</span><span class="concept">app review guidelines</span>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════ PHASE 13 ═══════════════════════════════ -->
+<div class="phase-header" id="phase-13">
+  <span class="ph-num">Phase 13</span>
+  <h2>UIKit Interop & Advanced Topics</h2>
+  <span class="ph-days">~10–14 days</span>
+</div>
+
+<div class="topic" id="uikit-interop">
+  <div class="topic-head">
+    <div class="topic-icon">🔌</div>
+    <div>
+      <div class="topic-title">UIKit Interoperability</div>
+      <div class="topic-badges">
+        <span class="badge b-medium">Medium</span>
+        <span class="badge b-days">3–4 days</span>
+        <span class="badge b-tag">Advanced</span>
+      </div>
+    </div>
+  </div>
+  <div class="topic-body">
+    <p>Not everything is in SwiftUI — many APIs still require UIKit. Wrap UIKit views using <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">UIViewRepresentable</code>. Wrap UIKit view controllers using <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">UIViewControllerRepresentable</code>. A <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">Coordinator</code> pattern handles delegates and callbacks between UIKit and SwiftUI. Common use cases: <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">WKWebView</code>, <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">UIImagePickerController</code>, <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">MKMapView</code>, custom text editors, camera previews.</p>
+    <div class="kotlin-note">AndroidView { } → UIViewRepresentable · no direct equivalent for UIViewControllerRepresentable in Compose</div>
+  </div>
+  <div class="topic-concepts">
+    <div class="concepts-label">Key Concepts</div>
+    <div class="concepts-list">
+      <span class="concept">UIViewRepresentable</span><span class="concept">UIViewControllerRepresentable</span><span class="concept">Coordinator</span><span class="concept">makeUIView / updateUIView</span><span class="concept">makeCoordinator</span>
+    </div>
+  </div>
+</div>
+
+<div class="topic" id="accessibility-i18n">
+  <div class="topic-head">
+    <div class="topic-icon">♿</div>
+    <div>
+      <div class="topic-title">Accessibility & Localisation</div>
+      <div class="topic-badges">
+        <span class="badge b-medium">Medium</span>
+        <span class="badge b-days">3–4 days</span>
+        <span class="badge b-tag">Quality</span>
+      </div>
+    </div>
+  </div>
+  <div class="topic-body">
+    <p>VoiceOver is iOS's screen reader — like TalkBack. SwiftUI has built-in accessibility support. Customise with <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">.accessibilityLabel()</code>, <code style="font-family:var(--code);background:rgba(0,0,8,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">.accessibilityHint()</code>, <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">.accessibilityElement(children:)</code>. Dynamic Type: use <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">.font(.body)</code> system fonts — they scale with the user's text size preference automatically. Localisation: use <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">String(localized:)</code> and <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">.strings</code> files or <code style="font-family:var(--code);background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:3px;color:#f9a8d4">.xcstrings</code> (modern).</p>
+    <div class="kotlin-note">TalkBack → VoiceOver · contentDescription → .accessibilityLabel() · strings.xml → .strings / .xcstrings</div>
+  </div>
+  <div class="topic-concepts">
+    <div class="concepts-label">Key Concepts</div>
+    <div class="concepts-list">
+      <span class="concept">VoiceOver</span><span class="concept">.accessibilityLabel()</span><span class="concept">Dynamic Type</span><span class="concept">String(localized:)</span><span class="concept">.xcstrings</span><span class="concept">RTL support</span>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════ PHASE 14 ═══════════════════════════════ -->
+<div class="phase-header" id="phase-14">
+  <span class="ph-num">Phase 14</span>
+  <h2>Final Project — Ship a Real App</h2>
+  <span class="ph-days">~20–30 days</span>
+</div>
+
+<div class="topic" id="final-project">
+  <div class="topic-head">
+    <div class="topic-icon">🏆</div>
+    <div>
+      <div class="topic-title">Capstone — Production App on the App Store</div>
+      <div class="topic-badges">
+        <span class="badge b-hard">Hard</span>
+        <span class="badge b-days">20–30 days</span>
+        <span class="badge b-tag">Capstone</span>
+        <span class="badge b-new">Ship It</span>
+      </div>
+    </div>
+  </div>
+  <div class="topic-body">
+    <p>Build and ship one complete app to the App Store. Minimum bar: networking, local persistence, at least one hardware feature (camera or location), push notifications, a home screen widget, and TestFlight beta. This is non-negotiable — reading this roadmap means nothing if you haven't shipped. Pick a small, focused idea. A well-executed simple app beats an unfinished complex one every time. Use everything from this roadmap. Fix everything App Store review flags. Get it live.</p>
+    <p style="margin-top:.6rem">Suggested apps: habit tracker with widget + notifications · local event finder with maps · QR scanner with history · simple invoicing tool.</p>
+  </div>
+  <div class="topic-concepts">
+    <div class="concepts-label">Must Include</div>
+    <div class="concepts-list">
+      <span class="concept">REST API</span><span class="concept">SwiftData persistence</span><span class="concept">1 hardware feature</span><span class="concept">push notifications</span><span class="concept">home screen widget</span><span class="concept">TestFlight</span><span class="concept">App Store submission</span>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<footer>
+  SwiftUI Mastery Roadmap · Built for Android developers ·
+  <span>Run demo.sh to render from your .md file</span>
+</footer>
+
+</div><!-- #content -->
+
+<script>
+// reading bar
+window.addEventListener('scroll',()=>{
+  const h=document.documentElement;
+  document.getElementById('topBar').style.width=(h.scrollTop/(h.scrollHeight-h.clientHeight)*100)+'%';
+  document.getElementById('btt').classList.toggle('show',window.scrollY>400);
+});
+
+// hamburger
+document.getElementById('menuBtn').addEventListener('click',()=>{
+  document.getElementById('sidebar').classList.toggle('open');
+});
+document.addEventListener('click',e=>{
+  const sb=document.getElementById('sidebar');
+  if(sb.classList.contains('open')&&!sb.contains(e.target)&&e.target.id!=='menuBtn')
+    sb.classList.remove('open');
+});
+
+// build nav
+function buildNav(){
+  const c=document.getElementById('navLinks');
+  document.querySelectorAll('.phase-header').forEach(ph=>{
+    const d=document.createElement('div');
+    d.className='nav-phase';
+    d.textContent=ph.querySelector('.ph-num').textContent+' '+ph.querySelector('h2').textContent;
+    c.appendChild(d);
+    // find topics until next phase
+    let el=ph.nextElementSibling;
+    while(el&&!el.classList.contains('phase-header')){
+      if(el.classList.contains('topic')||el.classList.contains('checkpoint')){
+        const id=el.id;
+        const title=el.querySelector('.topic-title');
+        if(id&&title){
+          const a=document.createElement('a');
+          a.href='#'+id;
+          a.textContent=title.textContent.substring(0,36);
+          a.addEventListener('click',()=>document.getElementById('sidebar').classList.remove('open'));
+          c.appendChild(a);
+        }
+      }
+      el=el.nextElementSibling;
+    }
+  });
+}
+
+// active nav
+function initActiveNav(){
+  const links=document.querySelectorAll('#navLinks a');
+  const obs=new IntersectionObserver(entries=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting){
+        links.forEach(l=>l.classList.remove('active'));
+        const a=[...links].find(l=>l.getAttribute('href')==='#'+e.target.id);
+        if(a){a.classList.add('active');a.scrollIntoView({block:'nearest'})}
+      }
+    });
+  },{rootMargin:'-15% 0px -80% 0px'});
+  document.querySelectorAll('.topic[id]').forEach(t=>obs.observe(t));
+}
+
+// card entrance animations
+function initCards(){
+  const obs=new IntersectionObserver(entries=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting){e.target.classList.add('visible');obs.unobserve(e.target)}
+    });
+  },{threshold:0.06});
+  document.querySelectorAll('.topic').forEach(t=>obs.observe(t));
+}
+
+// cursor trail
+document.addEventListener('mousemove',e=>{
+  const d=document.createElement('div');
+  Object.assign(d.style,{position:'fixed',width:'4px',height:'4px',borderRadius:'50%',
+    background:'var(--primary)',left:e.clientX+'px',top:e.clientY+'px',
+    pointerEvents:'none',opacity:'.45',transition:'opacity .5s',zIndex:'9999'});
+  document.body.appendChild(d);
+  setTimeout(()=>{d.style.opacity='0';setTimeout(()=>d.remove(),500)},80);
+});
+
+buildNav();initActiveNav();initCards();
+</script>
+</body>
+</html>

@@ -1,0 +1,1467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Go Lang Mastery Roadmap</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Playfair+Display:wght@600;800&family=Inter:wght@400;500;600&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --primary:   #00d4ff;
+  --red:       #ff6b35;
+  --gold:      #ffd700;
+  --blue:      #7c3aed;
+  --gopher:    #00add8;
+  --dark:      #050c17;
+  --darker:    #020810;
+  --card:      #070f1f;
+  --card2:     #0a1428;
+  --border:    rgba(0,212,255,0.15);
+  --border2:   rgba(0,212,255,0.30);
+  --text:      #dde6f0;
+  --dim:       #6b7fa3;
+  --mono:      'Space Mono', monospace;
+  --serif:     'Playfair Display', serif;
+  --sans:      'Inter', sans-serif;
+  --code:      'Fira Code', monospace;
+}
+
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--darker); }
+::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 3px; }
+
+body {
+  font-family: var(--sans);
+  background: var(--darker);
+  color: var(--text);
+  overflow-x: hidden;
+  cursor: crosshair;
+}
+
+.bg-grid {
+  position: fixed; inset: 0;
+  background:
+    linear-gradient(90deg, rgba(0,212,255,.03) 1px, transparent 1px),
+    linear-gradient(rgba(0,212,255,.03) 1px, transparent 1px);
+  background-size: 50px 50px;
+  animation: gridScroll 20s linear infinite;
+  pointer-events: none; z-index: 0;
+}
+@keyframes gridScroll { to { transform: translate(50px, 50px); } }
+
+.floater {
+  position: fixed;
+  font-family: var(--mono);
+  font-size: 1.8rem;
+  opacity: .06;
+  pointer-events: none;
+  animation: floatAnim 22s ease-in-out infinite;
+  color: var(--primary);
+}
+.floater:nth-child(2) { top:  8%; left:  6%; animation-delay:  0s; }
+.floater:nth-child(3) { top: 55%; right: 12%; animation-delay:  7s; }
+.floater:nth-child(4) { bottom: 18%; left: 18%; animation-delay: 14s; }
+@keyframes floatAnim {
+  0%,100% { transform: translate(0,0) rotate(0deg); }
+  25%     { transform: translate(18px,-18px) rotate(4deg); }
+  50%     { transform: translate(-18px, 18px) rotate(-4deg); }
+  75%     { transform: translate(18px, 18px) rotate(4deg); }
+}
+
+#sidebar {
+  position: fixed; top: 0; left: 0;
+  width: 265px; height: 100vh;
+  background: rgba(2,8,16,.97);
+  border-right: 1px solid var(--border2);
+  padding: 1.5rem 1rem;
+  overflow-y: auto;
+  z-index: 100;
+  transform: translateX(-100%);
+  transition: transform .3s ease;
+}
+#sidebar.open { transform: translateX(0); }
+#sidebar h3 {
+  font-family: var(--mono);
+  font-size: .7rem;
+  color: var(--primary);
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+  padding-bottom: .5rem;
+  border-bottom: 1px solid var(--border);
+}
+#sidebar a {
+  display: block;
+  font-family: var(--mono);
+  font-size: .72rem;
+  color: var(--dim);
+  text-decoration: none;
+  padding: .35rem .6rem;
+  border-radius: 4px;
+  margin-bottom: .15rem;
+  transition: color .2s, background .2s;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+#sidebar a:hover, #sidebar a.active {
+  color: var(--primary);
+  background: rgba(0,212,255,.08);
+}
+
+#menuBtn {
+  position: fixed; top: 1rem; left: 1rem; z-index: 200;
+  background: var(--card);
+  border: 1px solid var(--border2);
+  color: var(--primary);
+  font-family: var(--mono);
+  font-size: 1.1rem;
+  width: 40px; height: 40px;
+  cursor: pointer; border-radius: 4px;
+  display: flex; align-items: center; justify-content: center;
+  transition: background .2s;
+}
+#menuBtn:hover { background: rgba(0,212,255,.12); }
+
+#topProgress {
+  position: fixed; top: 0; left: 0;
+  height: 3px; background: var(--primary);
+  width: 0%; z-index: 500;
+  transition: width .1s;
+  box-shadow: 0 0 8px var(--primary);
+}
+
+#content {
+  position: relative; z-index: 1;
+  max-width: 880px;
+  margin: 0 auto;
+  padding: 4rem 2rem 6rem;
+}
+
+.hero {
+  min-height: 50vh;
+  display: flex; flex-direction: column;
+  justify-content: center;
+  padding: 3rem 0 4rem;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 3rem;
+}
+.hero-eyebrow {
+  font-family: var(--mono);
+  font-size: .75rem;
+  color: var(--primary);
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+  opacity: 0;
+  animation: fadeUp .8s ease .2s forwards;
+}
+.hero-title {
+  font-family: var(--serif);
+  font-size: clamp(2.5rem, 8vw, 6rem);
+  font-weight: 800;
+  line-height: 1.05;
+  color: var(--primary);
+  position: relative;
+  opacity: 0;
+  animation: glitchFloat 4s ease-in-out infinite, fadeUp .8s ease .4s forwards;
+}
+.hero-title::before, .hero-title::after {
+  content: attr(data-text);
+  position: absolute; top: 0; left: 0;
+  width: 100%; height: 100%;
+}
+.hero-title::before { color: var(--red); animation: glitch1 3s infinite; z-index: -1; }
+.hero-title::after  { color: var(--gold); animation: glitch2 2.5s infinite; z-index: -2; }
+@keyframes glitchFloat {
+  0%,100% { transform: translateY(0); }
+  50%     { transform: translateY(-8px); }
+}
+@keyframes glitch1 {
+  0%,100% { transform: translate(0); }
+  20% { transform: translate(-2px, 2px); }
+  40% { transform: translate(-2px,-2px); }
+  60% { transform: translate(2px, 2px); }
+  80% { transform: translate(2px,-2px); }
+}
+@keyframes glitch2 {
+  0%,100% { transform: translate(0); }
+  20% { transform: translate(2px,-2px); }
+  40% { transform: translate(2px, 2px); }
+  60% { transform: translate(-2px,-2px); }
+  80% { transform: translate(-2px, 2px); }
+}
+@keyframes fadeUp {
+  from { opacity:0; transform: translateY(20px); }
+  to   { opacity:1; transform: translateY(0); }
+}
+.hero-sub {
+  font-family: var(--mono);
+  font-size: clamp(.8rem, 2vw, 1rem);
+  color: var(--dim);
+  margin-top: 1.2rem;
+  opacity: 0;
+  animation: fadeUp .8s ease .6s forwards;
+}
+
+.progress-widget {
+  display: flex; gap: 1.5rem; flex-wrap: wrap;
+  margin-top: 2.5rem;
+  opacity: 0;
+  animation: fadeUp .8s ease .8s forwards;
+}
+.prog-stat {
+  flex: 1; min-width: 130px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 1rem 1.2rem;
+  text-align: center;
+}
+.prog-stat .num {
+  font-family: var(--mono);
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--primary);
+  display: block;
+}
+.prog-stat .lbl {
+  font-size: .72rem;
+  color: var(--dim);
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  margin-top: .3rem;
+}
+.prog-bar-wrap {
+  flex: 100%;
+  background: rgba(0,212,255,.08);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 1rem 1.5rem;
+  display: flex; align-items: center; gap: 1.2rem;
+}
+.prog-bar-bg {
+  flex: 1; height: 8px;
+  background: rgba(255,255,255,.06);
+  border-radius: 4px; overflow: hidden;
+}
+.prog-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--primary), var(--blue));
+  border-radius: 4px;
+  transition: width 1s ease;
+  box-shadow: 0 0 10px var(--primary);
+}
+.prog-pct {
+  font-family: var(--mono);
+  font-size: 1rem;
+  color: var(--primary);
+  min-width: 3.5ch;
+}
+
+h1.md-h1 {
+  font-family: var(--serif);
+  font-size: clamp(1.6rem, 4vw, 2.6rem);
+  font-weight: 800;
+  color: var(--primary);
+  margin: 3.5rem 0 1rem;
+  padding-bottom: .6rem;
+  border-bottom: 2px solid var(--border2);
+  position: relative;
+  scroll-margin-top: 5rem;
+}
+h1.md-h1::after {
+  content: '';
+  position: absolute; bottom: -2px; left: 0;
+  width: 80px; height: 2px;
+  background: var(--red);
+}
+h2.md-h2 {
+  font-family: var(--mono);
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--gold);
+  margin: 2rem 0 .8rem;
+  padding-left: 1rem;
+  border-left: 3px solid var(--gold);
+  letter-spacing: .04em;
+  scroll-margin-top: 5rem;
+}
+h3.md-h3 {
+  font-family: var(--mono);
+  font-size: .85rem;
+  color: var(--gopher);
+  margin: 1.5rem 0 .5rem;
+  letter-spacing: .06em;
+}
+
+.module-card {
+  background: linear-gradient(135deg, var(--card), var(--card2));
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 2rem 2rem 1.5rem;
+  margin: 2.5rem 0;
+  position: relative;
+  overflow: hidden;
+  transition: border-color .3s, box-shadow .3s, transform .3s;
+}
+.module-card::before {
+  content: '';
+  position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(0,212,255,.05), transparent);
+  transition: left .5s;
+}
+.module-card:hover::before { left: 100%; }
+.module-card:hover {
+  border-color: var(--border2);
+  box-shadow: 0 0 30px rgba(0,212,255,.08);
+  transform: translateY(-2px);
+}
+.module-corner {
+  position: absolute; top: 0; right: 0;
+  font-family: var(--mono);
+  font-size: .65rem;
+  color: var(--dim);
+  background: rgba(0,212,255,.07);
+  padding: .3rem .7rem;
+  border-bottom-left-radius: 6px;
+  letter-spacing: .08em;
+}
+
+.task-item {
+  display: flex; align-items: flex-start; gap: .9rem;
+  margin: .55rem 0;
+  padding: .5rem .7rem;
+  border-radius: 4px;
+  transition: background .2s;
+  cursor: pointer;
+}
+.task-item:hover { background: rgba(0,212,255,.04); }
+.task-item input[type="checkbox"] {
+  appearance: none; -webkit-appearance: none;
+  width: 16px; height: 16px; min-width: 16px;
+  border: 2px solid var(--primary);
+  border-radius: 3px;
+  background: transparent;
+  cursor: pointer; margin-top: 2px;
+  transition: background .2s;
+  position: relative;
+}
+.task-item input[type="checkbox"]:checked { background: var(--primary); }
+.task-item input[type="checkbox"]:checked::after {
+  content: '✓';
+  position: absolute; top: -2px; left: 1px;
+  font-size: 11px; font-weight: 700;
+  color: var(--darker);
+}
+.task-item span { font-size: .88rem; line-height: 1.55; color: var(--text); }
+.task-item:has(input:checked) span { text-decoration: line-through; color: var(--dim); }
+
+.md-table-wrap { overflow-x: auto; margin: 1.2rem 0; border-radius: 8px; }
+table { width: 100%; border-collapse: collapse; font-family: var(--mono); font-size: .78rem; }
+thead tr { background: rgba(0,212,255,.08); }
+th {
+  padding: .7rem 1rem; text-align: left;
+  color: var(--primary); letter-spacing: .06em;
+  text-transform: uppercase; font-size: .7rem;
+  border-bottom: 1px solid var(--border2);
+}
+td { padding: .65rem 1rem; border-bottom: 1px solid var(--border); color: var(--text); }
+tr:last-child td { border-bottom: none; }
+tbody tr:hover td { background: rgba(0,212,255,.03); }
+
+blockquote {
+  background: rgba(255,107,53,.08);
+  border-left: 4px solid var(--red);
+  padding: 1rem 1.4rem;
+  margin: 1.2rem 0;
+  border-radius: 0 6px 6px 0;
+  font-style: italic; font-size: .9rem;
+  color: #ffcdb4;
+  position: relative;
+}
+blockquote::before {
+  content: '⚡';
+  position: absolute; top: .8rem; right: 1rem;
+  font-style: normal; font-size: 1.1rem;
+}
+
+code {
+  font-family: var(--code);
+  background: rgba(0,212,255,.1);
+  padding: .18rem .45rem;
+  border-radius: 3px;
+  color: #7dd3fc;
+  font-size: .85em;
+}
+pre {
+  background: #000;
+  border: 1px solid var(--border2);
+  border-radius: 8px;
+  padding: 1.2rem;
+  overflow-x: auto;
+  margin: 1rem 0;
+}
+pre code { background: none; padding: 0; color: var(--primary); }
+
+.learning-block { margin: .8rem 0; }
+.learning-block label {
+  display: block;
+  font-family: var(--mono);
+  font-size: .72rem;
+  color: var(--gold);
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  margin-bottom: .4rem;
+}
+.learning-block textarea {
+  width: 100%;
+  background: rgba(0,0,0,.4);
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-family: var(--sans);
+  font-size: .85rem;
+  padding: .75rem 1rem;
+  border-radius: 6px;
+  min-height: 72px;
+  resize: vertical;
+  transition: border-color .2s, box-shadow .2s;
+}
+.learning-block textarea:focus {
+  outline: none;
+  border-color: var(--gold);
+  box-shadow: 0 0 10px rgba(255,215,0,.12);
+}
+.learning-block textarea::placeholder { color: var(--dim); }
+
+.md-hr {
+  border: none; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--border2), transparent);
+  margin: 3rem 0;
+}
+
+.md-p { font-size: .9rem; line-height: 1.7; color: var(--text); margin: .7rem 0; }
+.md-p strong { color: var(--primary); font-weight: 600; }
+
+.badge {
+  display: inline-block;
+  font-family: var(--mono); font-size: .62rem;
+  padding: .2rem .6rem; border-radius: 3px;
+  letter-spacing: .06em; text-transform: uppercase; font-weight: 700;
+  vertical-align: middle; margin-left: .5rem;
+}
+.badge-easy   { background: rgba(0,212,255,.15); color: var(--primary); border: 1px solid var(--primary); }
+.badge-medium { background: rgba(255,215,0,.12);  color: var(--gold);    border: 1px solid var(--gold); }
+.badge-hard   { background: rgba(255,107,53,.15); color: var(--red);     border: 1px solid var(--red); }
+
+#btt {
+  position: fixed; bottom: 2rem; right: 2rem; z-index: 300;
+  background: var(--card);
+  border: 1px solid var(--border2);
+  color: var(--primary);
+  font-family: var(--mono);
+  font-size: .75rem;
+  padding: .5rem .9rem;
+  border-radius: 4px;
+  cursor: pointer;
+  opacity: 0; pointer-events: none;
+  transition: opacity .3s, background .2s;
+}
+#btt.visible { opacity: 1; pointer-events: auto; }
+#btt:hover { background: rgba(0,212,255,.12); }
+
+footer {
+  text-align: center;
+  padding: 4rem 0 2rem;
+  border-top: 1px solid var(--border);
+  font-family: var(--mono);
+  font-size: .72rem;
+  color: var(--dim);
+  margin-top: 4rem;
+}
+footer span { color: var(--primary); }
+
+@media (max-width: 640px) {
+  #content { padding: 4rem 1rem 5rem; }
+  .progress-widget { gap: .8rem; }
+  .prog-stat .num { font-size: 1.5rem; }
+}
+</style>
+</head>
+<body>
+
+<div class="bg-grid"></div>
+<div class="floater">{ }</div>
+<div class="floater">:=</div>
+<div class="floater">go</div>
+
+<div id="topProgress"></div>
+
+<nav id="sidebar">
+  <h3>🐹 Modules</h3>
+  <div id="navLinks"></div>
+</nav>
+
+<button id="menuBtn" title="Toggle navigation">☰</button>
+<button id="btt" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑ TOP</button>
+
+<div id="content">
+
+  <header class="hero">
+    <div class="hero-eyebrow">// go lang mastery — zero to production</div>
+    <h1 class="hero-title" data-text="GOLANG">GOLANG</h1>
+    <p class="hero-sub">Complete path from absolute zero → goroutines, APIs, CLIs, microservices &amp; beyond.</p>
+    <div class="progress-widget">
+      <div class="prog-stat"><span class="num" id="statDone">—</span><span class="lbl">Done</span></div>
+      <div class="prog-stat"><span class="num" id="statTotal">—</span><span class="lbl">Total Tasks</span></div>
+      <div class="prog-stat"><span class="num" id="statPct">—</span><span class="lbl">Complete</span></div>
+      <div class="prog-bar-wrap">
+        <div class="prog-bar-bg"><div class="prog-bar-fill" id="progFill" style="width:0%"></div></div>
+        <span class="prog-pct" id="progPct">0%</span>
+      </div>
+    </div>
+  </header>
+
+<!-- ══════════════════════════════════════════════ INTRO ══ -->
+<div class="module-card" id="intro">
+<h1 class="md-h1">🐹 Go Language Mastery Roadmap</h1>
+<div class="md-p"><strong>The complete path from "what is Go?" to building production-grade CLIs, REST APIs, concurrent systems, and microservices — with every concept you need to write real Go code.</strong></div>
+<div class="md-p">Go (Golang) was created by Google in 2007 and open-sourced in 2009. It is statically typed, compiled, and built for simplicity, speed, and first-class concurrency. You do not need to know any other language to start — this roadmap assumes zero experience.</div>
+</div>
+
+<h2 class="md-h2" id="at-a-glance">📊 At a Glance</h2>
+<div class="md-table-wrap"><table>
+<thead><tr><th>Stat</th><th>Value</th></tr></thead>
+<tbody>
+<tr><td>Total Phases</td><td>10</td></tr>
+<tr><td>Total Modules</td><td>52</td></tr>
+<tr><td>Realistic Timeline (focused)</td><td>~120–180 days (~17–26 weeks)</td></tr>
+<tr><td>Mini Projects</td><td>6 milestone builds</td></tr>
+<tr><td>Target Outcome</td><td>Ship production Go services confidently</td></tr>
+</tbody></table></div>
+
+<h2 class="md-h2" id="rules">⚠️ Non-Negotiable Rules</h2>
+<div class="task-item"><input type="checkbox"><span>Type every code example by hand — never copy-paste. Muscle memory matters in Go.</span></div>
+<div class="task-item"><input type="checkbox"><span>Run <code>go vet</code> and <code>golint</code> on every file you write.</span></div>
+<div class="task-item"><input type="checkbox"><span>Finish a module's break tests before moving on. "Kind of works" is not done.</span></div>
+<div class="task-item"><input type="checkbox"><span>Read the official Go spec and stdlib docs — not just tutorials.</span></div>
+<div class="task-item"><input type="checkbox"><span>Every mini-project must compile with zero warnings and pass its tests.</span></div>
+<div class="task-item"><input type="checkbox"><span>If stuck for more than 2× the estimated time, ask for help — don't grind in silence.</span></div>
+
+<hr class="md-hr">
+
+<h2 class="md-h2" id="phase-overview">🗺️ Phase Overview</h2>
+<div class="md-table-wrap"><table>
+<thead><tr><th>Phase</th><th>Topic</th><th>Modules</th><th>Min Days</th><th>Max Days</th></tr></thead>
+<tbody>
+<tr><td>Phase 0</td><td>Setup &amp; Go Basics</td><td>5</td><td>7</td><td>12</td></tr>
+<tr><td>Phase 1</td><td>Core Language</td><td>7</td><td>14</td><td>21</td></tr>
+<tr><td>Phase 2</td><td>Data Structures &amp; Collections</td><td>5</td><td>10</td><td>15</td></tr>
+<tr><td>Phase 3</td><td>Functions, Methods &amp; Interfaces</td><td>5</td><td>10</td><td>16</td></tr>
+<tr><td>Phase 4</td><td>Error Handling &amp; Packages</td><td>4</td><td>8</td><td>12</td></tr>
+<tr><td>Phase 5</td><td>Concurrency</td><td>6</td><td>14</td><td>22</td></tr>
+<tr><td>Phase 6</td><td>File I/O, JSON &amp; Stdlib</td><td>4</td><td>8</td><td>12</td></tr>
+<tr><td>Phase 7</td><td>Building CLIs &amp; REST APIs</td><td>5</td><td>14</td><td>20</td></tr>
+<tr><td>Phase 8</td><td>Testing &amp; Tooling</td><td>4</td><td>8</td><td>12</td></tr>
+<tr><td>Phase 9</td><td>Advanced Go &amp; Production</td><td>7</td><td>14</td><td>20</td></tr>
+</tbody></table></div>
+
+<hr class="md-hr">
+
+<!-- ══════════════════════════════════════════ PHASE 0 ══ -->
+<div class="module-card" id="phase-0">
+<div class="module-corner">PHASE 0</div>
+<h1 class="md-h1" id="setup">⚙️ Phase 0 — Setup &amp; First Steps</h1>
+<div class="md-p"><strong>Goal:</strong> Get Go installed, understand the workspace, and write your first working program.</div>
+
+<h2 class="md-h2" id="install">Module 0.1 — Installing Go</h2>
+<div class="task-item"><input type="checkbox"><span>Download Go from <code>go.dev/dl</code> and install for your OS (Windows / macOS / Linux)</span></div>
+<div class="task-item"><input type="checkbox"><span>Run <code>go version</code> in terminal — confirm output like <code>go1.22.x</code></span></div>
+<div class="task-item"><input type="checkbox"><span>Understand <code>GOPATH</code> vs <code>GOROOT</code> — know that modern Go uses modules, not GOPATH hacks</span></div>
+<div class="task-item"><input type="checkbox"><span>Install VS Code + Go extension OR GoLand IDE</span></div>
+<div class="task-item"><input type="checkbox"><span>Install <code>gopls</code> (Go language server) — enables autocomplete, jump to def, inline errors</span></div>
+<div class="learning-block"><label>📝 Notes</label><textarea placeholder="What version did you install? Any setup issues?"></textarea></div>
+
+<h2 class="md-h2" id="hello-world">Module 0.2 — Hello, World</h2>
+<div class="task-item"><input type="checkbox"><span>Create a folder, run <code>go mod init myapp</code> — understand what <code>go.mod</code> is</span></div>
+<div class="task-item"><input type="checkbox"><span>Create <code>main.go</code> with <code>package main</code> and a <code>main()</code> function</span></div>
+<div class="task-item"><input type="checkbox"><span>Print "Hello, World!" using <code>fmt.Println</code></span></div>
+<div class="task-item"><input type="checkbox"><span>Run with <code>go run main.go</code></span></div>
+<div class="task-item"><input type="checkbox"><span>Build a binary with <code>go build</code> — run the resulting executable</span></div>
+<pre><code>package main
+
+import "fmt"
+
+func main() {
+    fmt.Println("Hello, World!")
+}</code></pre>
+
+<h2 class="md-h2" id="go-cli">Module 0.3 — Go CLI Basics</h2>
+<div class="task-item"><input type="checkbox"><span>Know the difference: <code>go run</code> (interpret) vs <code>go build</code> (compile) vs <code>go install</code></span></div>
+<div class="task-item"><input type="checkbox"><span>Use <code>go fmt</code> to auto-format your code — understand why Go enforces style</span></div>
+<div class="task-item"><input type="checkbox"><span>Use <code>go vet</code> to catch common mistakes</span></div>
+<div class="task-item"><input type="checkbox"><span>Use <code>go doc fmt.Println</code> to read stdlib docs in terminal</span></div>
+<div class="task-item"><input type="checkbox"><span>Understand <code>go.sum</code> — the dependency checksum lock file</span></div>
+
+<h2 class="md-h2" id="workspace">Module 0.4 — Packages &amp; the Module System</h2>
+<div class="task-item"><input type="checkbox"><span>Every Go file belongs to a <strong>package</strong>. Understand <code>package main</code> vs named packages</span></div>
+<div class="task-item"><input type="checkbox"><span>Create a second file in the same package — verify both compile together</span></div>
+<div class="task-item"><input type="checkbox"><span>Create a subfolder (<code>utils/</code>), add a file with its own package, import it in <code>main.go</code></span></div>
+<div class="task-item"><input type="checkbox"><span>Understand exported vs unexported identifiers: <code>Exported</code> (capital) vs <code>unexported</code></span></div>
+<div class="task-item"><input type="checkbox"><span>Add an external dependency with <code>go get github.com/some/package</code> — observe <code>go.mod</code> update</span></div>
+<div class="learning-block"><label>📝 Notes</label><textarea placeholder="Describe the module/package mental model in your own words."></textarea></div>
+
+<h2 class="md-h2" id="comments-docs">Module 0.5 — Comments &amp; Go Doc</h2>
+<div class="task-item"><input type="checkbox"><span>Write single-line (<code>//</code>) and multi-line (<code>/* */</code>) comments</span></div>
+<div class="task-item"><input type="checkbox"><span>Write a doc comment above a function: <code>// FunctionName does X</code> — run <code>go doc</code></span></div>
+<div class="task-item"><input type="checkbox"><span>Run <code>godoc -http=:6060</code> — browse your own package docs in browser</span></div>
+
+<blockquote>Phase 0 Break Test: You can create a new Go module from scratch, write a multi-file program, import a local package, add an external dep, and build a working binary — all without looking anything up.</blockquote>
+</div><!-- /phase-0 -->
+
+<hr class="md-hr">
+
+<!-- ══════════════════════════════════════════ PHASE 1 ══ -->
+<div class="module-card" id="phase-1">
+<div class="module-corner">PHASE 1</div>
+<h1 class="md-h1" id="core-language">🧱 Phase 1 — Core Language</h1>
+<div class="md-p"><strong>Goal:</strong> Master Go's type system, variables, control flow, and fundamental syntax.</div>
+
+<h2 class="md-h2" id="variables">Module 1.1 — Variables &amp; Types</h2>
+<div class="task-item"><input type="checkbox"><span>Declare variables with <code>var</code>: <code>var name string = "Go"</code></span></div>
+<div class="task-item"><input type="checkbox"><span>Use short declaration: <code>name := "Go"</code> — understand when you can and cannot use it</span></div>
+<div class="task-item"><input type="checkbox"><span>Know all basic types: <code>int</code>, <code>int8/16/32/64</code>, <code>uint</code>, <code>float32</code>, <code>float64</code>, <code>string</code>, <code>bool</code>, <code>byte</code>, <code>rune</code></span></div>
+<div class="task-item"><input type="checkbox"><span>Understand zero values: uninitialized <code>int</code> = <code>0</code>, <code>string</code> = <code>""</code>, <code>bool</code> = <code>false</code></span></div>
+<div class="task-item"><input type="checkbox"><span>Declare multiple variables in a block with <code>var ( ... )</code></span></div>
+<div class="task-item"><input type="checkbox"><span>Constants with <code>const</code> and typed/untyped constants</span></div>
+<div class="task-item"><input type="checkbox"><span>Understand <code>iota</code> for auto-incrementing constants</span></div>
+<pre><code>const (
+    Sunday = iota   // 0
+    Monday          // 1
+    Tuesday         // 2
+)</code></pre>
+<div class="learning-block"><label>📝 Notes</label><textarea placeholder="What surprised you about Go's type system?"></textarea></div>
+
+<h2 class="md-h2" id="strings">Module 1.2 — Strings &amp; Runes</h2>
+<div class="task-item"><input type="checkbox"><span>Strings in Go are immutable byte slices — understand the difference from C strings</span></div>
+<div class="task-item"><input type="checkbox"><span>String concatenation with <code>+</code> and efficient building with <code>strings.Builder</code></span></div>
+<div class="task-item"><input type="checkbox"><span>Use the <code>strings</code> package: <code>Contains</code>, <code>HasPrefix</code>, <code>Split</code>, <code>TrimSpace</code>, <code>ToLower</code>, <code>Replace</code></span></div>
+<div class="task-item"><input type="checkbox"><span>Understand UTF-8: a <code>rune</code> is a Unicode code point (<code>int32</code>), not a byte</span></div>
+<div class="task-item"><input type="checkbox"><span>Iterate over a string with <code>for i, r := range s</code> — <code>r</code> is a rune, not a byte</span></div>
+<div class="task-item"><input type="checkbox"><span>Convert string ↔ []byte and string ↔ []rune</span></div>
+<div class="task-item"><input type="checkbox"><span>Format strings with <code>fmt.Sprintf</code> and verbs: <code>%s</code>, <code>%d</code>, <code>%f</code>, <code>%v</code>, <code>%T</code>, <code>%+v</code></span></div>
+
+<h2 class="md-h2" id="control-flow">Module 1.3 — Control Flow</h2>
+<div class="task-item"><input type="checkbox"><span><code>if</code> / <code>else if</code> / <code>else</code> — no parentheses needed around condition</span></div>
+<div class="task-item"><input type="checkbox"><span>Init statement in <code>if</code>: <code>if err := doThing(); err != nil { ... }</code></span></div>
+<div class="task-item"><input type="checkbox"><span><code>switch</code> statement — no <code>break</code> needed, cases don't fall through by default</span></div>
+<div class="task-item"><input type="checkbox"><span>Switch with no condition (replaces long if-else chains)</span></div>
+<div class="task-item"><input type="checkbox"><span><code>for</code> loop — Go's only loop keyword. Know all three forms:</span></div>
+<div class="task-item"><input type="checkbox"><span>  • C-style: <code>for i := 0; i &lt; 10; i++ {}</code></span></div>
+<div class="task-item"><input type="checkbox"><span>  • While-style: <code>for condition {}</code></span></div>
+<div class="task-item"><input type="checkbox"><span>  • Infinite: <code>for {}</code> with <code>break</code></span></div>
+<div class="task-item"><input type="checkbox"><span><code>range</code> over slices, maps, strings, channels</span></div>
+<div class="task-item"><input type="checkbox"><span><code>break</code>, <code>continue</code>, and labeled breaks for nested loops</span></div>
+<div class="task-item"><input type="checkbox"><span><code>goto</code> — know it exists, understand why you rarely use it</span></div>
+<div class="learning-block"><label>📝 Notes</label><textarea placeholder="Write a for-range example from memory."></textarea></div>
+
+<h2 class="md-h2" id="pointers">Module 1.4 — Pointers</h2>
+<div class="task-item"><input type="checkbox"><span>A pointer holds the memory address of a value: <code>var p *int</code></span></div>
+<div class="task-item"><input type="checkbox"><span>Get address of variable: <code>p = &amp;x</code></span></div>
+<div class="task-item"><input type="checkbox"><span>Dereference pointer: <code>*p = 42</code> — changes the original value</span></div>
+<div class="task-item"><input type="checkbox"><span>Go has NO pointer arithmetic — safer than C</span></div>
+<div class="task-item"><input type="checkbox"><span>The <code>new(T)</code> function allocates zeroed memory and returns a pointer</span></div>
+<div class="task-item"><input type="checkbox"><span>Know when to use pointer receivers vs value receivers (covered deeply in Phase 3)</span></div>
+<div class="task-item"><input type="checkbox"><span>Nil pointers — dereferencing a nil pointer causes a panic</span></div>
+<pre><code>x := 42
+p := &amp;x
+*p = 100
+fmt.Println(x) // 100</code></pre>
+
+<h2 class="md-h2" id="type-conversions">Module 1.5 — Type Conversions &amp; Type Aliases</h2>
+<div class="task-item"><input type="checkbox"><span>Go does NOT do implicit type conversion — always explicit: <code>float64(i)</code></span></div>
+<div class="task-item"><input type="checkbox"><span>Convert between numeric types, string/int (<code>strconv.Itoa</code>, <code>strconv.Atoi</code>)</span></div>
+<div class="task-item"><input type="checkbox"><span>Define a type alias: <code>type Celsius float64</code> — it's a NEW type, not the same as float64</span></div>
+<div class="task-item"><input type="checkbox"><span>Understand type definitions vs type aliases (<code>type A = B</code> vs <code>type A B</code>)</span></div>
+<div class="learning-block"><label>📝 Notes</label><textarea placeholder="Why does Go require explicit type conversion?"></textarea></div>
+
+<h2 class="md-h2" id="scope">Module 1.6 — Scope &amp; Shadowing</h2>
+<div class="task-item"><input type="checkbox"><span>Go is lexically scoped — variables are only visible in the block they are declared</span></div>
+<div class="task-item"><input type="checkbox"><span>Package-level vs function-level vs block-level scope</span></div>
+<div class="task-item"><input type="checkbox"><span>Variable shadowing: inner <code>:=</code> can shadow outer variable — common source of bugs</span></div>
+<div class="task-item"><input type="checkbox"><span>The blank identifier <code>_</code> — discard values you don't need</span></div>
+
+<h2 class="md-h2" id="defer-panic">Module 1.7 — Defer, Panic &amp; Recover</h2>
+<div class="task-item"><input type="checkbox"><span><code>defer</code> schedules a function call to run when the surrounding function returns</span></div>
+<div class="task-item"><input type="checkbox"><span>Multiple defers execute in LIFO order (last in, first out)</span></div>
+<div class="task-item"><input type="checkbox"><span>Classic use: <code>defer file.Close()</code> right after opening a file</span></div>
+<div class="task-item"><input type="checkbox"><span><code>panic()</code> stops normal execution and unwinds the stack</span></div>
+<div class="task-item"><input type="checkbox"><span><code>recover()</code> inside a deferred function can catch a panic and prevent crash</span></div>
+<div class="task-item"><input type="checkbox"><span>Rule of thumb: use <code>panic</code> only for truly unrecoverable programmer errors; use <code>error</code> for normal failures</span></div>
+<div class="learning-block"><label>📝 Notes</label><textarea placeholder="Write a defer + recover example from memory."></textarea></div>
+
+<blockquote>Phase 1 Break Test: Given a prompt, write a program with variables, constants, loops, switch, string formatting, and a working defer — from scratch, no docs.</blockquote>
+</div><!-- /phase-1 -->
+
+<hr class="md-hr">
+
+<!-- ══════════════════════════════════════════ PHASE 2 ══ -->
+<div class="module-card" id="phase-2">
+<div class="module-corner">PHASE 2</div>
+<h1 class="md-h1" id="data-structures">📦 Phase 2 — Data Structures &amp; Collections</h1>
+<div class="md-p"><strong>Goal:</strong> Master arrays, slices, maps, and structs — Go's core data containers.</div>
+
+<h2 class="md-h2" id="arrays">Module 2.1 — Arrays</h2>
+<div class="task-item"><input type="checkbox"><span>Declare: <code>var arr [5]int</code> — size is part of the type in Go</span></div>
+<div class="task-item"><input type="checkbox"><span>Arrays are value types — assignment copies the entire array</span></div>
+<div class="task-item"><input type="checkbox"><span>Array literals: <code>arr := [3]string{"a", "b", "c"}</code></span></div>
+<div class="task-item"><input type="checkbox"><span>Use <code>[...]int{1, 2, 3}</code> to let Go count the size</span></div>
+<div class="task-item"><input type="checkbox"><span>In practice, slices are used far more than arrays — understand why</span></div>
+
+<h2 class="md-h2" id="slices">Module 2.2 — Slices (Critical)</h2>
+<div class="task-item"><input type="checkbox"><span>A slice is a descriptor: pointer + length + capacity — it does NOT own memory, the array underneath does</span></div>
+<div class="task-item"><input type="checkbox"><span>Create with literal: <code>s := []int{1, 2, 3}</code></span></div>
+<div class="task-item"><input type="checkbox"><span>Create with <code>make</code>: <code>s := make([]int, len, cap)</code></span></div>
+<div class="task-item"><input type="checkbox"><span>Slice a slice: <code>s[1:3]</code> — shares underlying array</span></div>
+<div class="task-item"><input type="checkbox"><span>Append: <code>s = append(s, 4, 5)</code> — may or may not allocate a new array</span></div>
+<div class="task-item"><input type="checkbox"><span>Understand when append causes a new allocation (capacity exceeded) vs in-place growth</span></div>
+<div class="task-item"><input type="checkbox"><span>Copy: <code>copy(dst, src)</code> — copies min(len(dst), len(src)) elements</span></div>
+<div class="task-item"><input type="checkbox"><span>Nil slice vs empty slice — both have len 0, but nil slice is <code>== nil</code></span></div>
+<div class="task-item"><input type="checkbox"><span>2D slices: <code>[][]int</code> — create and iterate</span></div>
+<div class="learning-block"><label>📝 Notes</label><textarea placeholder="Draw the slice header (ptr/len/cap) mental model."></textarea></div>
+
+<h2 class="md-h2" id="maps">Module 2.3 — Maps</h2>
+<div class="task-item"><input type="checkbox"><span>Declare: <code>m := map[string]int{}</code> or <code>make(map[string]int)</code></span></div>
+<div class="task-item"><input type="checkbox"><span>Set: <code>m["key"] = 42</code>, Get: <code>v := m["key"]</code></span></div>
+<div class="task-item"><input type="checkbox"><span>Check existence: <code>v, ok := m["key"]</code> — always use two-value form</span></div>
+<div class="task-item"><input type="checkbox"><span>Delete: <code>delete(m, "key")</code></span></div>
+<div class="task-item"><input type="checkbox"><span>Iterate: <code>for k, v := range m</code> — order is NOT guaranteed</span></div>
+<div class="task-item"><input type="checkbox"><span>Maps are reference types — passing a map to a function modifies the original</span></div>
+<div class="task-item"><input type="checkbox"><span>Maps are NOT safe for concurrent reads and writes — use <code>sync.Map</code> or a mutex</span></div>
+
+<h2 class="md-h2" id="structs">Module 2.4 — Structs</h2>
+<div class="task-item"><input type="checkbox"><span>Declare a struct type: <code>type Person struct { Name string; Age int }</code></span></div>
+<div class="task-item"><input type="checkbox"><span>Create struct literals: named fields vs positional (prefer named)</span></div>
+<div class="task-item"><input type="checkbox"><span>Access and set fields with dot notation</span></div>
+<div class="task-item"><input type="checkbox"><span>Structs are value types — assignment copies the struct</span></div>
+<div class="task-item"><input type="checkbox"><span>Anonymous structs: <code>p := struct{ X, Y int }{X: 1, Y: 2}</code></span></div>
+<div class="task-item"><input type="checkbox"><span>Embedded structs (Go's form of composition): <code>type Employee struct { Person; Salary float64 }</code></span></div>
+<div class="task-item"><input type="checkbox"><span>Struct tags for JSON: <code>Name string \`json:"name"\`</code></span></div>
+<div class="task-item"><input type="checkbox"><span>Comparing structs — two structs are equal if all fields are equal and all fields are comparable</span></div>
+<div class="learning-block"><label>📝 Notes</label><textarea placeholder="How does Go embedding differ from inheritance?"></textarea></div>
+
+<h2 class="md-h2" id="generics-basics">Module 2.5 — Generics Basics (Go 1.18+)</h2>
+<div class="task-item"><input type="checkbox"><span>Understand why generics exist: write one function that works for multiple types</span></div>
+<div class="task-item"><input type="checkbox"><span>Type parameters: <code>func Min[T constraints.Ordered](a, b T) T</code></span></div>
+<div class="task-item"><input type="checkbox"><span>The <code>constraints</code> package: <code>any</code>, <code>comparable</code>, <code>constraints.Ordered</code></span></div>
+<div class="task-item"><input type="checkbox"><span>Generic structs: <code>type Stack[T any] struct { items []T }</code></span></div>
+<div class="task-item"><input type="checkbox"><span>When NOT to use generics — don't over-engineer simple code</span></div>
+
+<blockquote>Phase 2 Break Test: Implement a generic stack, a word-frequency counter (map), and a function that filters a slice — all from memory, with tests.</blockquote>
+</div><!-- /phase-2 -->
+
+<hr class="md-hr">
+
+<!-- ══════════════════════════════════════════ PHASE 3 ══ -->
+<div class="module-card" id="phase-3">
+<div class="module-corner">PHASE 3</div>
+<h1 class="md-h1" id="functions-interfaces">🔧 Phase 3 — Functions, Methods &amp; Interfaces</h1>
+<div class="md-p"><strong>Goal:</strong> Master Go's function system and its elegant, implicit interface model.</div>
+
+<h2 class="md-h2" id="functions">Module 3.1 — Functions</h2>
+<div class="task-item"><input type="checkbox"><span>Basic function: parameters, return type, return value</span></div>
+<div class="task-item"><input type="checkbox"><span>Multiple return values: <code>func divide(a, b float64) (float64, error)</code></span></div>
+<div class="task-item"><input type="checkbox"><span>Named return values and naked returns (use sparingly)</span></div>
+<div class="task-item"><input type="checkbox"><span>Variadic functions: <code>func sum(nums ...int) int</code></span></div>
+<div class="task-item"><input type="checkbox"><span>Functions as first-class values: assign to variable, pass as argument, return from function</span></div>
+<div class="task-item"><input type="checkbox"><span>Anonymous functions / function literals: <code>func(x int) int { return x * 2 }(5)</code></span></div>
+<div class="task-item"><input type="checkbox"><span>Closures — a function that captures variables from its enclosing scope</span></div>
+<pre><code>func counter() func() int {
+    count := 0
+    return func() int {
+        count++
+        return count
+    }
+}</code></pre>
+<div class="learning-block"><label>📝 Notes</label><textarea placeholder="Write a closure that memoizes a function."></textarea></div>
+
+<h2 class="md-h2" id="methods">Module 3.2 — Methods</h2>
+<div class="task-item"><input type="checkbox"><span>A method is a function with a receiver: <code>func (p Person) Greet() string</code></span></div>
+<div class="task-item"><input type="checkbox"><span>Value receiver (<code>func (p Person)</code>) — works on a copy of the struct</span></div>
+<div class="task-item"><input type="checkbox"><span>Pointer receiver (<code>func (p *Person)</code>) — modifies the original; use for mutation or large structs</span></div>
+<div class="task-item"><input type="checkbox"><span>Consistency rule: if any method uses a pointer receiver, all methods should</span></div>
+<div class="task-item"><input type="checkbox"><span>You can define methods on any named type, not just structs: <code>type Celsius float64; func (c Celsius) ToF() float64</code></span></div>
+<div class="task-item"><input type="checkbox"><span>Method expressions and method values</span></div>
+
+<h2 class="md-h2" id="interfaces">Module 3.3 — Interfaces (Core Go Concept)</h2>
+<div class="task-item"><input type="checkbox"><span>An interface is a set of method signatures — implicit, no <code>implements</code> keyword</span></div>
+<div class="task-item"><input type="checkbox"><span>A type "implements" an interface by having all required methods — automatically</span></div>
+<div class="task-item"><input type="checkbox"><span>Define an interface: <code>type Stringer interface { String() string }</code></span></div>
+<div class="task-item"><input type="checkbox"><span>The <code>fmt.Stringer</code> interface — implement it on your structs for custom printing</span></div>
+<div class="task-item"><input type="checkbox"><span>Interface variables hold a (value, type) pair internally</span></div>
+<div class="task-item"><input type="checkbox"><span>The empty interface <code>interface{}</code> (or <code>any</code>) accepts any value — use with care</span></div>
+<div class="task-item"><input type="checkbox"><span>Type assertion: <code>v, ok := i.(string)</code> — safely extract concrete type from interface</span></div>
+<div class="task-item"><input type="checkbox"><span>Type switch: <code>switch v := i.(type) { case string: ... case int: ... }</code></span></div>
+<div class="task-item"><input type="checkbox"><span>Interface composition: <code>type ReadWriter interface { Reader; Writer }</code></span></div>
+<div class="task-item"><input type="checkbox"><span>Design principle: accept interfaces, return structs</span></div>
+<pre><code>type Shape interface {
+    Area() float64
+    Perimeter() float64
+}
+
+type Circle struct { Radius float64 }
+func (c Circle) Area() float64      { return 3.14159 * c.Radius * c.Radius }
+func (c Circle) Perimeter() float64 { return 2 * 3.14159 * c.Radius }</code></pre>
+<div class="learning-block"><label>📝 Notes</label><textarea placeholder="Why does Go use implicit interfaces? What problem does it solve?"></textarea></div>
+
+<h2 class="md-h2" id="stdlib-interfaces">Module 3.4 — Key Stdlib Interfaces</h2>
+<div class="task-item"><input type="checkbox"><span><code>io.Reader</code> — the most important interface in Go: <code>Read(p []byte) (n int, err error)</code></span></div>
+<div class="task-item"><input type="checkbox"><span><code>io.Writer</code> — <code>Write(p []byte) (n int, err error)</code></span></div>
+<div class="task-item"><input type="checkbox"><span><code>io.Closer</code>, <code>io.ReadWriter</code>, <code>io.ReadWriteCloser</code></span></div>
+<div class="task-item"><input type="checkbox"><span><code>fmt.Stringer</code>, <code>fmt.GoStringer</code>, <code>error</code> interface</span></div>
+<div class="task-item"><input type="checkbox"><span><code>sort.Interface</code>: <code>Len()</code>, <code>Less(i, j int) bool</code>, <code>Swap(i, j int)</code></span></div>
+<div class="task-item"><input type="checkbox"><span>Implement <code>sort.Interface</code> on a custom slice and sort it with <code>sort.Sort</code></span></div>
+
+<h2 class="md-h2" id="functional-patterns">Module 3.5 — Functional Patterns</h2>
+<div class="task-item"><input type="checkbox"><span>Implement <code>Map</code>, <code>Filter</code>, and <code>Reduce</code> as generic functions</span></div>
+<div class="task-item"><input type="checkbox"><span>Function options pattern for flexible constructors</span></div>
+<div class="task-item"><input type="checkbox"><span>Middleware pattern using function wrapping</span></div>
+<div class="task-item"><input type="checkbox"><span>The <code>slices</code> package (Go 1.21+): <code>slices.Contains</code>, <code>slices.SortFunc</code></span></div>
+
+<blockquote>Phase 3 Break Test: Define a <code>Shape</code> interface, implement it on 3 types, write a function accepting <code>[]Shape</code> and computing total area — with a type switch. No docs.</blockquote>
+</div><!-- /phase-3 -->
+
+<hr class="md-hr">
+
+<!-- ══════════════════════════════════════════ PHASE 4 ══ -->
+<div class="module-card" id="phase-4">
+<div class="module-corner">PHASE 4</div>
+<h1 class="md-h1" id="errors-packages">🔴 Phase 4 — Error Handling &amp; Packages</h1>
+<div class="md-p"><strong>Goal:</strong> Handle errors the Go way — explicit, propagated, and meaningful.</div>
+
+<h2 class="md-h2" id="errors">Module 4.1 — Error Handling</h2>
+<div class="task-item"><input type="checkbox"><span>The <code>error</code> type is just an interface: <code>type error interface { Error() string }</code></span></div>
+<div class="task-item"><input type="checkbox"><span>Always check errors: <code>if err != nil { return err }</code> — the Go way</span></div>
+<div class="task-item"><input type="checkbox"><span>Create errors: <code>errors.New("something failed")</code></span></div>
+<div class="task-item"><input type="checkbox"><span>Formatted errors: <code>fmt.Errorf("loading user %d: %w", id, err)</code></span></div>
+<div class="task-item"><input type="checkbox"><span>The <code>%w</code> verb wraps an error — use <code>errors.Unwrap</code>, <code>errors.Is</code>, <code>errors.As</code></span></div>
+<div class="task-item"><input type="checkbox"><span><code>errors.Is(err, target)</code> — checks if any error in the chain equals target</span></div>
+<div class="task-item"><input type="checkbox"><span><code>errors.As(err, &amp;target)</code> — extracts a specific error type from the chain</span></div>
+<div class="task-item"><input type="checkbox"><span>Define custom error types: <code>type NotFoundError struct { ID int }</code> with <code>Error() string</code> method</span></div>
+<div class="task-item"><input type="checkbox"><span>Sentinel errors: package-level <code>var ErrNotFound = errors.New("not found")</code></span></div>
+<pre><code>type ValidationError struct {
+    Field   string
+    Message string
+}
+func (e *ValidationError) Error() string {
+    return fmt.Sprintf("validation error on %s: %s", e.Field, e.Message)
+}</code></pre>
+<div class="learning-block"><label>📝 Notes</label><textarea placeholder="How does Go error wrapping differ from exceptions?"></textarea></div>
+
+<h2 class="md-h2" id="packages-design">Module 4.2 — Package Design</h2>
+<div class="task-item"><input type="checkbox"><span>One package per directory — the directory name is the import path segment</span></div>
+<div class="task-item"><input type="checkbox"><span>Package naming conventions: short, lowercase, no underscores</span></div>
+<div class="task-item"><input type="checkbox"><span><code>internal/</code> packages — only importable by the parent module</span></div>
+<div class="task-item"><input type="checkbox"><span>Circular imports are forbidden — design packages to be layered</span></div>
+<div class="task-item"><input type="checkbox"><span>The <code>init()</code> function — runs once per package, before <code>main</code></span></div>
+<div class="task-item"><input type="checkbox"><span>Blank import <code>_ "pkg"</code> — imports for side effects (e.g. registering SQL drivers)</span></div>
+
+<h2 class="md-h2" id="stdlib-deep">Module 4.3 — Essential Stdlib Packages</h2>
+<div class="task-item"><input type="checkbox"><span><code>fmt</code> — formatted I/O, <code>Println</code>, <code>Printf</code>, <code>Sprintf</code>, <code>Fprintf</code>, <code>Errorf</code>, <code>Sscanf</code></span></div>
+<div class="task-item"><input type="checkbox"><span><code>os</code> — file system, environment variables, <code>os.Exit</code>, <code>os.Args</code></span></div>
+<div class="task-item"><input type="checkbox"><span><code>io</code> — <code>io.ReadAll</code>, <code>io.Copy</code>, <code>io.Pipe</code>, <code>io.TeeReader</code></span></div>
+<div class="task-item"><input type="checkbox"><span><code>bufio</code> — buffered reader/writer, <code>bufio.Scanner</code> for line-by-line reading</span></div>
+<div class="task-item"><input type="checkbox"><span><code>strings</code> and <code>bytes</code> — string manipulation</span></div>
+<div class="task-item"><input type="checkbox"><span><code>strconv</code> — string ↔ int/float conversions</span></div>
+<div class="task-item"><input type="checkbox"><span><code>math</code> and <code>math/rand</code> — basic math operations</span></div>
+<div class="task-item"><input type="checkbox"><span><code>time</code> — <code>time.Now</code>, <code>time.Duration</code>, formatting, <code>time.Sleep</code>, <code>time.After</code></span></div>
+<div class="task-item"><input type="checkbox"><span><code>regexp</code> — compile and use regular expressions</span></div>
+<div class="task-item"><input type="checkbox"><span><code>sort</code> — sort slices with <code>sort.Slice</code> and <code>sort.SliceStable</code></span></div>
+
+<h2 class="md-h2" id="logging">Module 4.4 — Logging</h2>
+<div class="task-item"><input type="checkbox"><span>Standard <code>log</code> package: <code>log.Println</code>, <code>log.Fatal</code>, <code>log.Printf</code></span></div>
+<div class="task-item"><input type="checkbox"><span><code>log/slog</code> (Go 1.21+) — structured logging with levels: Debug, Info, Warn, Error</span></div>
+<div class="task-item"><input type="checkbox"><span>Configure slog with JSON handler for production output</span></div>
+<div class="task-item"><input type="checkbox"><span>Third-party: <code>zerolog</code> or <code>zap</code> for high-performance logging</span></div>
+
+<blockquote>Phase 4 Break Test: Write a package with custom error types, sentinel errors, error wrapping, and a package-level logger. Verify errors.Is and errors.As work correctly via tests.</blockquote>
+</div><!-- /phase-4 -->
+
+<hr class="md-hr">
+
+<!-- ══════════════════════════════════════════ PHASE 5 ══ -->
+<div class="module-card" id="phase-5">
+<div class="module-corner">PHASE 5 — ⭐ Most Important</div>
+<h1 class="md-h1" id="concurrency">⚡ Phase 5 — Concurrency (Go's Superpower)</h1>
+<div class="md-p"><strong>Goal:</strong> Understand goroutines, channels, and synchronization — the reason most people choose Go.</div>
+
+<h2 class="md-h2" id="goroutines">Module 5.1 — Goroutines</h2>
+<div class="task-item"><input type="checkbox"><span>A goroutine is a lightweight thread managed by the Go runtime — NOT an OS thread</span></div>
+<div class="task-item"><input type="checkbox"><span>Launch with <code>go functionName()</code> or <code>go func() { ... }()</code></span></div>
+<div class="task-item"><input type="checkbox"><span>Go can run thousands of goroutines concurrently on a small number of OS threads</span></div>
+<div class="task-item"><input type="checkbox"><span>The main goroutine exiting kills all other goroutines — use <code>sync.WaitGroup</code> to wait</span></div>
+<div class="task-item"><input type="checkbox"><span>Goroutines start with a small stack (~2KB) that grows automatically</span></div>
+<div class="task-item"><input type="checkbox"><span>GOMAXPROCS — controls how many OS threads run goroutines in parallel</span></div>
+<pre><code>var wg sync.WaitGroup
+for i := 0; i &lt; 5; i++ {
+    wg.Add(1)
+    go func(id int) {
+        defer wg.Done()
+        fmt.Println("worker", id)
+    }(i)
+}
+wg.Wait()</code></pre>
+<div class="learning-block"><label>📝 Notes</label><textarea placeholder="What is the difference between concurrency and parallelism?"></textarea></div>
+
+<h2 class="md-h2" id="channels">Module 5.2 — Channels</h2>
+<div class="task-item"><input type="checkbox"><span>Channels are typed pipes for communicating between goroutines</span></div>
+<div class="task-item"><input type="checkbox"><span>Create: <code>ch := make(chan int)</code> (unbuffered) or <code>make(chan int, 10)</code> (buffered)</span></div>
+<div class="task-item"><input type="checkbox"><span>Send: <code>ch &lt;- value</code>, Receive: <code>value := &lt;-ch</code></span></div>
+<div class="task-item"><input type="checkbox"><span>Unbuffered channel: send blocks until someone receives — synchronization point</span></div>
+<div class="task-item"><input type="checkbox"><span>Buffered channel: send only blocks when buffer is full</span></div>
+<div class="task-item"><input type="checkbox"><span>Close a channel: <code>close(ch)</code> — signals no more values will be sent</span></div>
+<div class="task-item"><input type="checkbox"><span>Range over channel: <code>for v := range ch</code> — exits when channel is closed</span></div>
+<div class="task-item"><input type="checkbox"><span>Check if channel is closed: <code>v, ok := &lt;-ch</code> — <code>ok</code> is false when closed</span></div>
+<div class="task-item"><input type="checkbox"><span>Directional channels: <code>chan&lt;- int</code> (send only), <code>&lt;-chan int</code> (receive only)</span></div>
+
+<h2 class="md-h2" id="select">Module 5.3 — Select</h2>
+<div class="task-item"><input type="checkbox"><span><code>select</code> lets a goroutine wait on multiple channel operations simultaneously</span></div>
+<div class="task-item"><input type="checkbox"><span>If multiple cases are ready, one is chosen at random</span></div>
+<div class="task-item"><input type="checkbox"><span><code>default</code> case in select — runs if no other case is ready (non-blocking)</span></div>
+<div class="task-item"><input type="checkbox"><span>Timeout pattern: <code>case &lt;-time.After(5 * time.Second):</code></span></div>
+<div class="task-item"><input type="checkbox"><span>Cancellation pattern with a done channel</span></div>
+<pre><code>select {
+case msg := &lt;-ch1:
+    fmt.Println("received from ch1:", msg)
+case ch2 &lt;- 42:
+    fmt.Println("sent to ch2")
+case &lt;-time.After(time.Second):
+    fmt.Println("timeout")
+}</code></pre>
+<div class="learning-block"><label>📝 Notes</label><textarea placeholder="Implement a fan-out and fan-in pipeline from memory."></textarea></div>
+
+<h2 class="md-h2" id="sync-pkg">Module 5.4 — sync Package</h2>
+<div class="task-item"><input type="checkbox"><span><code>sync.WaitGroup</code> — wait for a group of goroutines to finish</span></div>
+<div class="task-item"><input type="checkbox"><span><code>sync.Mutex</code> — mutual exclusion lock: <code>mu.Lock()</code> / <code>mu.Unlock()</code></span></div>
+<div class="task-item"><input type="checkbox"><span><code>sync.RWMutex</code> — allows multiple concurrent readers, one writer</span></div>
+<div class="task-item"><input type="checkbox"><span><code>sync.Once</code> — ensures code runs exactly once (singleton initialization)</span></div>
+<div class="task-item"><input type="checkbox"><span><code>sync.Pool</code> — reuse temporary objects to reduce GC pressure</span></div>
+<div class="task-item"><input type="checkbox"><span><code>sync.Map</code> — concurrent-safe map for specific use cases</span></div>
+
+<h2 class="md-h2" id="context">Module 5.5 — Context</h2>
+<div class="task-item"><input type="checkbox"><span>The <code>context</code> package carries deadlines, cancellations, and request-scoped values</span></div>
+<div class="task-item"><input type="checkbox"><span><code>context.Background()</code> — root context, never cancelled</span></div>
+<div class="task-item"><input type="checkbox"><span><code>context.WithCancel(parent)</code> — returns ctx + cancel function; call cancel() to cancel</span></div>
+<div class="task-item"><input type="checkbox"><span><code>context.WithTimeout(parent, duration)</code> — auto-cancels after duration</span></div>
+<div class="task-item"><input type="checkbox"><span><code>context.WithDeadline(parent, time)</code> — cancels at absolute time</span></div>
+<div class="task-item"><input type="checkbox"><span>Pass context as first argument to functions: <code>func DoWork(ctx context.Context, ...)</code></span></div>
+<div class="task-item"><input type="checkbox"><span>Check for cancellation inside loops: <code>select { case &lt;-ctx.Done(): return ctx.Err() }</code></span></div>
+<div class="task-item"><input type="checkbox"><span><code>context.WithValue</code> — store request-scoped values (use typed keys to avoid collisions)</span></div>
+<div class="learning-block"><label>📝 Notes</label><textarea placeholder="Why should context always be the first parameter?"></textarea></div>
+
+<h2 class="md-h2" id="atomic">Module 5.6 — Atomic Operations &amp; Race Detector</h2>
+<div class="task-item"><input type="checkbox"><span><code>sync/atomic</code> — low-level atomic operations for int64, uint32, pointers without mutex overhead</span></div>
+<div class="task-item"><input type="checkbox"><span>Run the race detector: <code>go run -race main.go</code> — catches data races at runtime</span></div>
+<div class="task-item"><input type="checkbox"><span>Understand data races: two goroutines access same memory, at least one writes, no sync</span></div>
+<div class="task-item"><input type="checkbox"><span>Golden rule: <strong>Do not communicate by sharing memory; share memory by communicating.</strong></span></div>
+
+<blockquote>Phase 5 Break Test: Build a worker pool — N goroutines process jobs from a buffered channel. Support graceful shutdown via context cancellation. Run with -race, zero races.</blockquote>
+</div><!-- /phase-5 -->
+
+<hr class="md-hr">
+
+<!-- ══════════════════════════════════════════ PHASE 6 ══ -->
+<div class="module-card" id="phase-6">
+<div class="module-corner">PHASE 6</div>
+<h1 class="md-h1" id="file-io">💾 Phase 6 — File I/O, JSON &amp; Stdlib Mastery</h1>
+<div class="md-p"><strong>Goal:</strong> Read/write files, encode/decode JSON, and deeply use Go's standard library.</div>
+
+<h2 class="md-h2" id="file-ops">Module 6.1 — File Operations</h2>
+<div class="task-item"><input type="checkbox"><span>Open a file: <code>os.Open(name)</code> (read-only) or <code>os.OpenFile(name, flags, perm)</code></span></div>
+<div class="task-item"><input type="checkbox"><span>Always <code>defer f.Close()</code> after opening — check the error on Close too</span></div>
+<div class="task-item"><input type="checkbox"><span>Read entire file: <code>os.ReadFile(name)</code></span></div>
+<div class="task-item"><input type="checkbox"><span>Write entire file: <code>os.WriteFile(name, data, 0644)</code></span></div>
+<div class="task-item"><input type="checkbox"><span>Read line by line with <code>bufio.Scanner</code></span></div>
+<div class="task-item"><input type="checkbox"><span>Write buffered with <code>bufio.Writer</code> — always <code>Flush()</code> at end</span></div>
+<div class="task-item"><input type="checkbox"><span>Work with temp files: <code>os.CreateTemp</code>, <code>os.MkdirTemp</code></span></div>
+<div class="task-item"><input type="checkbox"><span>Walk a directory tree: <code>filepath.Walk</code> or <code>fs.WalkDir</code></span></div>
+
+<h2 class="md-h2" id="json">Module 6.2 — JSON Encoding/Decoding</h2>
+<div class="task-item"><input type="checkbox"><span>Marshal struct to JSON: <code>json.Marshal(v)</code> returns <code>([]byte, error)</code></span></div>
+<div class="task-item"><input type="checkbox"><span>Unmarshal JSON to struct: <code>json.Unmarshal(data, &amp;v)</code></span></div>
+<div class="task-item"><input type="checkbox"><span>Struct tags control JSON keys: <code>json:"name,omitempty"</code></span></div>
+<div class="task-item"><input type="checkbox"><span>Stream JSON with <code>json.NewEncoder(w).Encode(v)</code> and <code>json.NewDecoder(r).Decode(&amp;v)</code></span></div>
+<div class="task-item"><input type="checkbox"><span>Handle unknown JSON structure with <code>map[string]interface{}</code> or <code>json.RawMessage</code></span></div>
+<div class="task-item"><input type="checkbox"><span>Custom marshaling: implement <code>json.Marshaler</code> / <code>json.Unmarshaler</code> interfaces</span></div>
+<pre><code>type User struct {
+    ID       int    \`json:"id"\`
+    Name     string \`json:"name"\`
+    Password string \`json:"-"\`           // never serialized
+    Email    string \`json:"email,omitempty"\`
+}</code></pre>
+<div class="learning-block"><label>📝 Notes</label><textarea placeholder="What does omitempty do? When should you use json.RawMessage?"></textarea></div>
+
+<h2 class="md-h2" id="net-http-basics">Module 6.3 — net/http Basics</h2>
+<div class="task-item"><input type="checkbox"><span>Make an HTTP GET: <code>http.Get(url)</code> — always close <code>resp.Body</code></span></div>
+<div class="task-item"><input type="checkbox"><span>Make a POST with JSON body using <code>http.NewRequest</code> and <code>http.Client.Do</code></span></div>
+<div class="task-item"><input type="checkbox"><span>Set custom headers and timeouts on <code>http.Client</code></span></div>
+<div class="task-item"><input type="checkbox"><span>Read response body with <code>io.ReadAll(resp.Body)</code></span></div>
+<div class="task-item"><input type="checkbox"><span>Never use the default <code>http.Client</code> in production — always set <code>Timeout</code></span></div>
+
+<h2 class="md-h2" id="templates">Module 6.4 — Templates</h2>
+<div class="task-item"><input type="checkbox"><span><code>text/template</code> — render text output from a template and data struct</span></div>
+<div class="task-item"><input type="checkbox"><span><code>html/template</code> — HTML-aware, auto-escapes values for XSS prevention</span></div>
+<div class="task-item"><input type="checkbox"><span>Template actions: <code>{{.Field}}</code>, <code>{{if}}</code>, <code>{{range}}</code>, <code>{{define}}</code>, <code>{{template}}</code></span></div>
+<div class="task-item"><input type="checkbox"><span>Parse and cache templates at startup, not per request</span></div>
+
+<blockquote>Phase 6 Break Test: Write a program that reads a JSON config file, fetches a URL, and writes the response body to a new file — with full error handling. No frameworks.</blockquote>
+</div><!-- /phase-6 -->
+
+<hr class="md-hr">
+
+<!-- ══════════════════════════════════════════ PHASE 7 ══ -->
+<div class="module-card" id="phase-7">
+<div class="module-corner">PHASE 7 — 🏗️ Build Real Things</div>
+<h1 class="md-h1" id="cli-api">🌐 Phase 7 — CLIs &amp; REST APIs</h1>
+<div class="md-p"><strong>Goal:</strong> Build real, usable tools — a CLI application and a full REST API.</div>
+
+<h2 class="md-h2" id="cli-build">Module 7.1 — Building a CLI</h2>
+<div class="task-item"><input type="checkbox"><span>Parse flags with the standard <code>flag</code> package: <code>flag.String</code>, <code>flag.Int</code>, <code>flag.Bool</code>, <code>flag.Parse()</code></span></div>
+<div class="task-item"><input type="checkbox"><span>Read positional arguments from <code>flag.Args()</code></span></div>
+<div class="task-item"><input type="checkbox"><span>Use <code>cobra</code> for subcommands (industry standard: kubectl, gh, docker all use cobra)</span></div>
+<div class="task-item"><input type="checkbox"><span>Structure: <code>cmd/</code> dir for cobra commands, <code>internal/</code> for business logic</span></div>
+<div class="task-item"><input type="checkbox"><span>Read from stdin: <code>bufio.NewScanner(os.Stdin)</code></span></div>
+<div class="task-item"><input type="checkbox"><span>Colorized output: <code>github.com/fatih/color</code></span></div>
+<div class="task-item"><input type="checkbox"><span>Progress bars: <code>github.com/schollz/progressbar</code></span></div>
+<div class="task-item"><input type="checkbox"><span>Exit codes: use <code>os.Exit(1)</code> for errors, <code>0</code> for success</span></div>
+<div class="md-p"><strong>🏗️ Mini Project 1:</strong> Build a CLI tool — e.g. a file organizer, a weather fetcher, or a markdown converter. Must have at least 2 subcommands, flags, and config file support.</div>
+<div class="learning-block"><label>📝 Mini Project 1 Notes</label><textarea placeholder="What did you build? What was hardest?"></textarea></div>
+
+<h2 class="md-h2" id="http-server">Module 7.2 — HTTP Server with net/http</h2>
+<div class="task-item"><input type="checkbox"><span>Start a server: <code>http.ListenAndServe(":8080", handler)</code></span></div>
+<div class="task-item"><input type="checkbox"><span>Handler interface: <code>ServeHTTP(w http.ResponseWriter, r *http.Request)</code></span></div>
+<div class="task-item"><input type="checkbox"><span>Use <code>http.ServeMux</code> for routing (Go 1.22+ has pattern matching with {params})</span></div>
+<div class="task-item"><input type="checkbox"><span>Write JSON responses: set <code>Content-Type: application/json</code> header, use <code>json.NewEncoder(w).Encode</code></span></div>
+<div class="task-item"><input type="checkbox"><span>Read path params, query params, and request body</span></div>
+<div class="task-item"><input type="checkbox"><span>Middleware: wrap handlers to add logging, auth, CORS</span></div>
+<div class="task-item"><input type="checkbox"><span>Graceful shutdown with <code>http.Server.Shutdown(ctx)</code></span></div>
+<pre><code>mux := http.NewServeMux()
+mux.HandleFunc("GET /users/{id}", getUser)
+mux.HandleFunc("POST /users", createUser)
+
+srv := &amp;http.Server{Addr: ":8080", Handler: mux, ReadTimeout: 5*time.Second}
+go srv.ListenAndServe()
+// graceful shutdown on signal...</code></pre>
+
+<h2 class="md-h2" id="routers">Module 7.3 — Popular Routers &amp; Frameworks</h2>
+<div class="task-item"><input type="checkbox"><span><code>chi</code> — lightweight, idiomatic router compatible with net/http middleware</span></div>
+<div class="task-item"><input type="checkbox"><span><code>gin</code> — fast, popular, batteries-included framework</span></div>
+<div class="task-item"><input type="checkbox"><span><code>echo</code> — performant with good middleware ecosystem</span></div>
+<div class="task-item"><input type="checkbox"><span>Understand what each framework adds vs standard library</span></div>
+<div class="task-item"><input type="checkbox"><span>Build the same API with stdlib, then with <code>chi</code> — compare the code</span></div>
+
+<h2 class="md-h2" id="database">Module 7.4 — Database Access</h2>
+<div class="task-item"><input type="checkbox"><span><code>database/sql</code> — standard interface for SQL databases</span></div>
+<div class="task-item"><input type="checkbox"><span>Connect with a driver: <code>_ "github.com/lib/pq"</code> (PostgreSQL) or <code>mattn/go-sqlite3</code></span></div>
+<div class="task-item"><input type="checkbox"><span>Queries: <code>db.QueryContext</code>, <code>db.QueryRowContext</code>, <code>db.ExecContext</code> — always pass context</span></div>
+<div class="task-item"><input type="checkbox"><span>Scan rows: <code>rows.Scan(&amp;id, &amp;name)</code></span></div>
+<div class="task-item"><input type="checkbox"><span>Transactions: <code>db.BeginTx</code>, <code>tx.Commit()</code>, <code>tx.Rollback()</code></span></div>
+<div class="task-item"><input type="checkbox"><span>Prepared statements for performance and SQL injection prevention</span></div>
+<div class="task-item"><input type="checkbox"><span>Connection pool: configure <code>SetMaxOpenConns</code>, <code>SetMaxIdleConns</code>, <code>SetConnMaxLifetime</code></span></div>
+<div class="task-item"><input type="checkbox"><span>ORM option: <code>GORM</code> — understand the tradeoffs vs raw SQL</span></div>
+<div class="task-item"><input type="checkbox"><span>Query builder: <code>sqlc</code> — generate type-safe Go from SQL queries</span></div>
+<div class="learning-block"><label>📝 Notes</label><textarea placeholder="When would you choose sqlc vs GORM vs raw database/sql?"></textarea></div>
+
+<h2 class="md-h2" id="rest-api-project">Module 7.5 — Full REST API Project</h2>
+<div class="task-item"><input type="checkbox"><span>Define your domain: e.g. a task manager, blog, or inventory system</span></div>
+<div class="task-item"><input type="checkbox"><span>CRUD endpoints: Create, Read, Update, Delete with proper HTTP methods and status codes</span></div>
+<div class="task-item"><input type="checkbox"><span>Request validation middleware</span></div>
+<div class="task-item"><input type="checkbox"><span>JWT authentication middleware</span></div>
+<div class="task-item"><input type="checkbox"><span>Structured error responses: consistent JSON error format</span></div>
+<div class="task-item"><input type="checkbox"><span>Environment-based configuration (<code>os.Getenv</code> or <code>godotenv</code>)</span></div>
+<div class="task-item"><input type="checkbox"><span>Dockerize the app: write a multi-stage <code>Dockerfile</code></span></div>
+<div class="md-p"><strong>🏗️ Mini Project 2:</strong> Ship a fully working REST API with database, auth, and Docker. Document the endpoints. Deploy somewhere (fly.io, Railway, or VPS).</div>
+<div class="learning-block"><label>📝 Mini Project 2 Notes</label><textarea placeholder="What endpoints did you build? What did you learn about API design?"></textarea></div>
+
+<blockquote>Phase 7 Break Test: Given a spec, implement a REST endpoint including routing, validation, DB query, and error response — in under 45 minutes.</blockquote>
+</div><!-- /phase-7 -->
+
+<hr class="md-hr">
+
+<!-- ══════════════════════════════════════════ PHASE 8 ══ -->
+<div class="module-card" id="phase-8">
+<div class="module-corner">PHASE 8</div>
+<h1 class="md-h1" id="testing">🧪 Phase 8 — Testing &amp; Tooling</h1>
+<div class="md-p"><strong>Goal:</strong> Write tests like a professional Go developer. Automate quality.</div>
+
+<h2 class="md-h2" id="unit-testing">Module 8.1 — Unit Testing</h2>
+<div class="task-item"><input type="checkbox"><span>Tests live in <code>_test.go</code> files in the same package (or <code>_test</code> suffix for black-box tests)</span></div>
+<div class="task-item"><input type="checkbox"><span>Test functions: <code>func TestFuncName(t *testing.T)</code></span></div>
+<div class="task-item"><input type="checkbox"><span><code>t.Error</code> / <code>t.Errorf</code> — marks test as failed, continues</span></div>
+<div class="task-item"><input type="checkbox"><span><code>t.Fatal</code> / <code>t.Fatalf</code> — marks failed and stops the test immediately</span></div>
+<div class="task-item"><input type="checkbox"><span>Table-driven tests — the idiomatic Go test pattern</span></div>
+<div class="task-item"><input type="checkbox"><span><code>t.Run("subtest name", func(t *testing.T) { ... })</code> — subtests</span></div>
+<div class="task-item"><input type="checkbox"><span>Run specific tests: <code>go test -run TestFuncName ./...</code></span></div>
+<div class="task-item"><input type="checkbox"><span>Run with verbose output: <code>go test -v ./...</code></span></div>
+<pre><code>func TestAdd(t *testing.T) {
+    tests := []struct {
+        name     string
+        a, b     int
+        expected int
+    }{
+        {"positive", 2, 3, 5},
+        {"negative", -1, -2, -3},
+    }
+    for _, tt := range tests {
+        t.Run(tt.name, func(t *testing.T) {
+            if got := Add(tt.a, tt.b); got != tt.expected {
+                t.Errorf("Add(%d,%d) = %d, want %d", tt.a, tt.b, got, tt.expected)
+            }
+        })
+    }
+}</code></pre>
+<div class="learning-block"><label>📝 Notes</label><textarea placeholder="Write a table-driven test for a string function you wrote."></textarea></div>
+
+<h2 class="md-h2" id="benchmarks">Module 8.2 — Benchmarks &amp; Coverage</h2>
+<div class="task-item"><input type="checkbox"><span>Benchmark functions: <code>func BenchmarkFuncName(b *testing.B) { for i := 0; i &lt; b.N; i++ { ... } }</code></span></div>
+<div class="task-item"><input type="checkbox"><span>Run benchmarks: <code>go test -bench=. -benchmem ./...</code></span></div>
+<div class="task-item"><input type="checkbox"><span>Read benchmark output: ns/op, B/op, allocs/op</span></div>
+<div class="task-item"><input type="checkbox"><span>Coverage: <code>go test -coverprofile=c.out ./...</code> then <code>go tool cover -html=c.out</code></span></div>
+<div class="task-item"><input type="checkbox"><span>Fuzz testing (Go 1.18+): <code>func FuzzFuncName(f *testing.F)</code></span></div>
+
+<h2 class="md-h2" id="mocking">Module 8.3 — Mocking &amp; Test Doubles</h2>
+<div class="task-item"><input type="checkbox"><span>Use interfaces to make code testable — inject dependencies</span></div>
+<div class="task-item"><input type="checkbox"><span>Write manual fakes / stubs implementing the same interface</span></div>
+<div class="task-item"><input type="checkbox"><span><code>testify</code> library: <code>assert.Equal</code>, <code>assert.NoError</code>, <code>require.Equal</code></span></div>
+<div class="task-item"><input type="checkbox"><span><code>mockery</code> or <code>gomock</code> — auto-generate mocks from interfaces</span></div>
+<div class="task-item"><input type="checkbox"><span>HTTP server mocking: <code>httptest.NewServer</code> and <code>httptest.NewRecorder</code></span></div>
+
+<h2 class="md-h2" id="tooling">Module 8.4 — Go Tooling Ecosystem</h2>
+<div class="task-item"><input type="checkbox"><span><code>golangci-lint</code> — run 50+ linters in one command. Configure with <code>.golangci.yml</code></span></div>
+<div class="task-item"><input type="checkbox"><span><code>staticcheck</code> — advanced static analysis</span></div>
+<div class="task-item"><input type="checkbox"><span><code>goimports</code> — like gofmt but also manages imports</span></div>
+<div class="task-item"><input type="checkbox"><span><code>air</code> — live reload for development</span></div>
+<div class="task-item"><input type="checkbox"><span><code>delve</code> (dlv) — Go debugger, integrates with VS Code</span></div>
+<div class="task-item"><input type="checkbox"><span><code>pprof</code> — profiling CPU and memory, visualize with <code>go tool pprof</code></span></div>
+<div class="task-item"><input type="checkbox"><span>Write a <code>Makefile</code> with targets: <code>build</code>, <code>test</code>, <code>lint</code>, <code>run</code></span></div>
+
+<blockquote>Phase 8 Break Test: Achieve &gt;80% test coverage on your REST API. Write at least 3 table-driven tests and one benchmark. Run golangci-lint with zero warnings.</blockquote>
+</div><!-- /phase-8 -->
+
+<hr class="md-hr">
+
+<!-- ══════════════════════════════════════════ PHASE 9 ══ -->
+<div class="module-card" id="phase-9">
+<div class="module-corner">PHASE 9 — 🚀 Advanced</div>
+<h1 class="md-h1" id="advanced">🔬 Phase 9 — Advanced Go &amp; Production</h1>
+<div class="md-p"><strong>Goal:</strong> Write idiomatic, production-grade Go. Understand the runtime, performance, and architecture patterns.</div>
+
+<h2 class="md-h2" id="reflect">Module 9.1 — Reflection</h2>
+<div class="task-item"><input type="checkbox"><span>The <code>reflect</code> package lets you inspect types and values at runtime</span></div>
+<div class="task-item"><input type="checkbox"><span><code>reflect.TypeOf(v)</code> and <code>reflect.ValueOf(v)</code></span></div>
+<div class="task-item"><input type="checkbox"><span>Inspect struct fields and tags at runtime — how JSON encoding works internally</span></div>
+<div class="task-item"><input type="checkbox"><span>Set values via reflection using <code>Value.Set</code></span></div>
+<div class="task-item"><input type="checkbox"><span>When to use reflection vs generics — reflection is a last resort</span></div>
+
+<h2 class="md-h2" id="unsafe">Module 9.2 — unsafe &amp; cgo (Know, Don't Abuse)</h2>
+<div class="task-item"><input type="checkbox"><span><code>unsafe.Pointer</code> — bypass Go's type system (understand why it's called unsafe)</span></div>
+<div class="task-item"><input type="checkbox"><span><code>unsafe.Sizeof</code>, <code>unsafe.Alignof</code>, <code>unsafe.Offsetof</code></span></div>
+<div class="task-item"><input type="checkbox"><span>cgo basics — calling C code from Go (and the performance cost)</span></div>
+<div class="task-item"><input type="checkbox"><span>Rule: avoid unsafe in application code. Understand it to read stdlib source.</span></div>
+
+<h2 class="md-h2" id="performance">Module 9.3 — Performance &amp; Memory</h2>
+<div class="task-item"><input type="checkbox"><span>Go's garbage collector (GC) — understand mark-and-sweep, GOGC, GC pauses</span></div>
+<div class="task-item"><input type="checkbox"><span>Stack vs heap allocation — Go decides, but you can influence with <code>-gcflags="-m"</code></span></div>
+<div class="task-item"><input type="checkbox"><span>Escape analysis: if a value escapes to heap, it's GC'd — use pointers deliberately</span></div>
+<div class="task-item"><input type="checkbox"><span>Pre-allocate slices and maps when size is known: <code>make([]T, 0, n)</code></span></div>
+<div class="task-item"><input type="checkbox"><span>Use <code>strings.Builder</code> instead of concatenation in loops</span></div>
+<div class="task-item"><input type="checkbox"><span>CPU profiling: add <code>net/http/pprof</code>, then use <code>go tool pprof</code></span></div>
+<div class="task-item"><input type="checkbox"><span>Memory profiling: find heap allocations and allocation hotspots</span></div>
+<div class="task-item"><input type="checkbox"><span>Use <code>sync.Pool</code> for frequently allocated, short-lived objects</span></div>
+<div class="learning-block"><label>📝 Notes</label><textarea placeholder="Profile your REST API. Find and fix the top allocation hotspot."></textarea></div>
+
+<h2 class="md-h2" id="patterns">Module 9.4 — Go Design Patterns</h2>
+<div class="task-item"><input type="checkbox"><span>Functional options pattern: <code>func WithTimeout(d time.Duration) Option</code></span></div>
+<div class="task-item"><input type="checkbox"><span>Builder pattern with method chaining</span></div>
+<div class="task-item"><input type="checkbox"><span>Repository pattern for data access layer</span></div>
+<div class="task-item"><input type="checkbox"><span>Service layer pattern — separate business logic from transport</span></div>
+<div class="task-item"><input type="checkbox"><span>Observer / event emitter using channels</span></div>
+<div class="task-item"><input type="checkbox"><span>Pipeline pattern: <code>gen → stage1 → stage2 → sink</code> with goroutines and channels</span></div>
+<div class="task-item"><input type="checkbox"><span>Circuit breaker pattern for resilient external calls</span></div>
+
+<h2 class="md-h2" id="microservices">Module 9.5 — Microservices &amp; gRPC</h2>
+<div class="task-item"><input type="checkbox"><span>Understand when to use gRPC vs REST (binary protocol, strong typing, streaming)</span></div>
+<div class="task-item"><input type="checkbox"><span>Define a <code>.proto</code> file, generate Go code with <code>protoc</code></span></div>
+<div class="task-item"><input type="checkbox"><span>Implement a gRPC server and client in Go</span></div>
+<div class="task-item"><input type="checkbox"><span>Server streaming, client streaming, bidirectional streaming</span></div>
+<div class="task-item"><input type="checkbox"><span>gRPC interceptors (middleware for gRPC)</span></div>
+<div class="task-item"><input type="checkbox"><span>Service discovery basics — how services find each other</span></div>
+<div class="task-item"><input type="checkbox"><span><code>connect-go</code> — modern alternative to gRPC-Go</span></div>
+<div class="md-p"><strong>🏗️ Mini Project 3:</strong> Build two microservices that communicate over gRPC. Include a context deadline, interceptor logging, and Protobuf-defined types.</div>
+<div class="learning-block"><label>📝 Mini Project 3 Notes</label><textarea placeholder="gRPC vs REST: when would you choose each?"></textarea></div>
+
+<h2 class="md-h2" id="observability">Module 9.6 — Observability</h2>
+<div class="task-item"><input type="checkbox"><span>Structured logging with <code>slog</code> — include trace IDs in every log line</span></div>
+<div class="task-item"><input type="checkbox"><span>Metrics with <code>prometheus/client_golang</code> — counters, gauges, histograms</span></div>
+<div class="task-item"><input type="checkbox"><span>Expose <code>/metrics</code> endpoint for Prometheus scraping</span></div>
+<div class="task-item"><input type="checkbox"><span>Distributed tracing with OpenTelemetry Go SDK</span></div>
+<div class="task-item"><input type="checkbox"><span>Health check endpoints: <code>/health</code> (liveness) and <code>/ready</code> (readiness)</span></div>
+
+<h2 class="md-h2" id="deployment">Module 9.7 — Deployment &amp; Production Readiness</h2>
+<div class="task-item"><input type="checkbox"><span>Multi-stage Docker build: builder image → minimal distroless/alpine image</span></div>
+<div class="task-item"><input type="checkbox"><span>Cross-compilation: <code>GOOS=linux GOARCH=amd64 go build</code></span></div>
+<div class="task-item"><input type="checkbox"><span>12-factor app principles in Go — config from env, stateless processes</span></div>
+<div class="task-item"><input type="checkbox"><span>Graceful shutdown: catch <code>SIGINT</code>/<code>SIGTERM</code>, drain in-flight requests</span></div>
+<div class="task-item"><input type="checkbox"><span>Embed static files in the binary with <code>//go:embed</code></span></div>
+<div class="task-item"><input type="checkbox"><span>GitHub Actions CI: lint, test, build, push Docker image</span></div>
+<div class="task-item"><input type="checkbox"><span>Deploy to fly.io, Railway, GCP Cloud Run, or a VPS with systemd</span></div>
+<div class="task-item"><input type="checkbox"><span>Kubernetes basics: Pod, Deployment, Service, ConfigMap — deploy your API</span></div>
+<div class="learning-block"><label>📝 Notes</label><textarea placeholder="Write the Dockerfile for your REST API from memory."></textarea></div>
+
+<blockquote>Phase 9 Break Test: Profile your API under load, find a bottleneck, fix it, and prove improvement with benchmarks. Then ship it to production with CI/CD.</blockquote>
+</div><!-- /phase-9 -->
+
+<hr class="md-hr">
+
+<!-- ══════════════════════════════════════════ CAPSTONE ══ -->
+<div class="module-card" id="capstone">
+<div class="module-corner">CAPSTONE</div>
+<h1 class="md-h1" id="final-projects">🏆 Capstone Projects</h1>
+<div class="md-p"><strong>Build at least one of these to prove mastery. These expose gaps that no isolated module can.</strong></div>
+
+<h2 class="md-h2" id="project-cli">🏗️ Capstone A — Production CLI Tool</h2>
+<div class="task-item"><input type="checkbox"><span>Choose: a GitHub CLI plugin, a deployment tool, a local dev env manager, or a data pipeline CLI</span></div>
+<div class="task-item"><input type="checkbox"><span>Cobra subcommands + persistent flags + config file (viper)</span></div>
+<div class="task-item"><input type="checkbox"><span>External API calls with retry and timeout</span></div>
+<div class="task-item"><input type="checkbox"><span>Local SQLite database for caching or state</span></div>
+<div class="task-item"><input type="checkbox"><span>Release with <code>goreleaser</code> — multi-platform binaries via GitHub Actions</span></div>
+<div class="task-item"><input type="checkbox"><span>README with usage examples, <code>--help</code> text polished</span></div>
+<div class="learning-block"><label>📝 Capstone A Notes</label><textarea placeholder="What did you ship? Link to repo."></textarea></div>
+
+<h2 class="md-h2" id="project-api">🏗️ Capstone B — Full-Stack Backend Service</h2>
+<div class="task-item"><input type="checkbox"><span>REST API + WebSocket support (real-time notifications)</span></div>
+<div class="task-item"><input type="checkbox"><span>PostgreSQL with migrations (golang-migrate or Atlas)</span></div>
+<div class="task-item"><input type="checkbox"><span>JWT auth + refresh token rotation</span></div>
+<div class="task-item"><input type="checkbox"><span>Rate limiting middleware</span></div>
+<div class="task-item"><input type="checkbox"><span>Worker pool for background jobs</span></div>
+<div class="task-item"><input type="checkbox"><span>&gt;70% test coverage with integration tests against a real test DB</span></div>
+<div class="task-item"><input type="checkbox"><span>Docker Compose for local dev (app + db + redis)</span></div>
+<div class="task-item"><input type="checkbox"><span>Deployed and publicly accessible</span></div>
+<div class="learning-block"><label>📝 Capstone B Notes</label><textarea placeholder="Architecture decisions: what did you choose and why?"></textarea></div>
+
+<h2 class="md-h2" id="project-concurrent">🏗️ Capstone C — Concurrent Systems Project</h2>
+<div class="task-item"><input type="checkbox"><span>Choose: a web crawler, a distributed cache, a message queue, or a load balancer</span></div>
+<div class="task-item"><input type="checkbox"><span>Heavy use of goroutines, channels, and sync primitives</span></div>
+<div class="task-item"><input type="checkbox"><span>Pass <code>-race</code> detector with zero races</span></div>
+<div class="task-item"><input type="checkbox"><span>Benchmarked under load with pprof flame graphs</span></div>
+<div class="task-item"><input type="checkbox"><span>Write a short architecture doc explaining your concurrency design</span></div>
+<div class="learning-block"><label>📝 Capstone C Notes</label><textarea placeholder="What concurrency patterns did you use and why?"></textarea></div>
+
+<hr class="md-hr">
+
+<h2 class="md-h2" id="resources">📚 Essential Resources</h2>
+<div class="md-table-wrap"><table>
+<thead><tr><th>Resource</th><th>Type</th><th>When to Use</th></tr></thead>
+<tbody>
+<tr><td>go.dev/tour</td><td>Interactive tutorial</td><td>Phase 0–2</td></tr>
+<tr><td>go.dev/doc/effective_go</td><td>Official guide</td><td>Ongoing reference</td></tr>
+<tr><td>go.dev/ref/spec</td><td>Language spec</td><td>When in doubt about behavior</td></tr>
+<tr><td>pkg.go.dev</td><td>Stdlib docs</td><td>Always open</td></tr>
+<tr><td>gobyexample.com</td><td>Code examples</td><td>Quick syntax lookup</td></tr>
+<tr><td>100 Go Mistakes (book)</td><td>Book</td><td>Phase 6+</td></tr>
+<tr><td>Jon Bodner — Learning Go (book)</td><td>Book</td><td>Phase 1+</td></tr>
+<tr><td>github.com/golang/go/wiki</td><td>Community wiki</td><td>Best practices</td></tr>
+<tr><td>r/golang</td><td>Community</td><td>When stuck</td></tr>
+<tr><td>Gophers Slack</td><td>Community</td><td>Real-time help</td></tr>
+</tbody></table></div>
+
+<h2 class="md-h2" id="tracker">📊 Module Tracker</h2>
+<div class="md-table-wrap"><table>
+<thead><tr><th>Module</th><th>Phase</th><th>Difficulty</th><th>Min Days</th><th>Max Days</th><th>Status</th></tr></thead>
+<tbody>
+<tr><td>Install &amp; Setup</td><td>Phase 0</td><td><span class="badge badge-easy">Easy</span></td><td>1</td><td>2</td><td>🟡 Planned</td></tr>
+<tr><td>Hello World</td><td>Phase 0</td><td><span class="badge badge-easy">Easy</span></td><td>1</td><td>1</td><td>🟡 Planned</td></tr>
+<tr><td>Go CLI Basics</td><td>Phase 0</td><td><span class="badge badge-easy">Easy</span></td><td>1</td><td>2</td><td>🟡 Planned</td></tr>
+<tr><td>Packages &amp; Modules</td><td>Phase 0</td><td><span class="badge badge-medium">Medium</span></td><td>2</td><td>4</td><td>🟡 Planned</td></tr>
+<tr><td>Variables &amp; Types</td><td>Phase 1</td><td><span class="badge badge-easy">Easy</span></td><td>2</td><td>3</td><td>🟡 Planned</td></tr>
+<tr><td>Strings &amp; Runes</td><td>Phase 1</td><td><span class="badge badge-medium">Medium</span></td><td>2</td><td>3</td><td>🟡 Planned</td></tr>
+<tr><td>Control Flow</td><td>Phase 1</td><td><span class="badge badge-easy">Easy</span></td><td>2</td><td>3</td><td>🟡 Planned</td></tr>
+<tr><td>Pointers</td><td>Phase 1</td><td><span class="badge badge-medium">Medium</span></td><td>2</td><td>3</td><td>🟡 Planned</td></tr>
+<tr><td>Defer, Panic, Recover</td><td>Phase 1</td><td><span class="badge badge-medium">Medium</span></td><td>2</td><td>3</td><td>🟡 Planned</td></tr>
+<tr><td>Slices</td><td>Phase 2</td><td><span class="badge badge-medium">Medium</span></td><td>2</td><td>4</td><td>🟡 Planned</td></tr>
+<tr><td>Maps</td><td>Phase 2</td><td><span class="badge badge-easy">Easy</span></td><td>1</td><td>2</td><td>🟡 Planned</td></tr>
+<tr><td>Structs</td><td>Phase 2</td><td><span class="badge badge-medium">Medium</span></td><td>2</td><td>3</td><td>🟡 Planned</td></tr>
+<tr><td>Generics</td><td>Phase 2</td><td><span class="badge badge-medium">Medium</span></td><td>2</td><td>3</td><td>🟡 Planned</td></tr>
+<tr><td>Functions &amp; Closures</td><td>Phase 3</td><td><span class="badge badge-medium">Medium</span></td><td>2</td><td>3</td><td>🟡 Planned</td></tr>
+<tr><td>Methods</td><td>Phase 3</td><td><span class="badge badge-medium">Medium</span></td><td>2</td><td>3</td><td>🟡 Planned</td></tr>
+<tr><td>Interfaces</td><td>Phase 3</td><td><span class="badge badge-hard">Hard</span></td><td>3</td><td>5</td><td>🟡 Planned</td></tr>
+<tr><td>Error Handling</td><td>Phase 4</td><td><span class="badge badge-medium">Medium</span></td><td>2</td><td>4</td><td>🟡 Planned</td></tr>
+<tr><td>Package Design</td><td>Phase 4</td><td><span class="badge badge-medium">Medium</span></td><td>2</td><td>3</td><td>🟡 Planned</td></tr>
+<tr><td>Goroutines</td><td>Phase 5</td><td><span class="badge badge-medium">Medium</span></td><td>3</td><td>4</td><td>🟡 Planned</td></tr>
+<tr><td>Channels</td><td>Phase 5</td><td><span class="badge badge-hard">Hard</span></td><td>3</td><td>5</td><td>🟡 Planned</td></tr>
+<tr><td>Select</td><td>Phase 5</td><td><span class="badge badge-hard">Hard</span></td><td>2</td><td>4</td><td>🟡 Planned</td></tr>
+<tr><td>sync Package</td><td>Phase 5</td><td><span class="badge badge-medium">Medium</span></td><td>2</td><td>3</td><td>🟡 Planned</td></tr>
+<tr><td>Context</td><td>Phase 5</td><td><span class="badge badge-hard">Hard</span></td><td>2</td><td>4</td><td>🟡 Planned</td></tr>
+<tr><td>File I/O</td><td>Phase 6</td><td><span class="badge badge-easy">Easy</span></td><td>2</td><td>3</td><td>🟡 Planned</td></tr>
+<tr><td>JSON</td><td>Phase 6</td><td><span class="badge badge-medium">Medium</span></td><td>2</td><td>3</td><td>🟡 Planned</td></tr>
+<tr><td>Building a CLI</td><td>Phase 7</td><td><span class="badge badge-medium">Medium</span></td><td>3</td><td>5</td><td>🟡 Planned</td></tr>
+<tr><td>HTTP Server</td><td>Phase 7</td><td><span class="badge badge-medium">Medium</span></td><td>3</td><td>5</td><td>🟡 Planned</td></tr>
+<tr><td>Database Access</td><td>Phase 7</td><td><span class="badge badge-hard">Hard</span></td><td>4</td><td>6</td><td>🟡 Planned</td></tr>
+<tr><td>Unit Testing</td><td>Phase 8</td><td><span class="badge badge-medium">Medium</span></td><td>2</td><td>3</td><td>🟡 Planned</td></tr>
+<tr><td>Benchmarks</td><td>Phase 8</td><td><span class="badge badge-medium">Medium</span></td><td>1</td><td>2</td><td>🟡 Planned</td></tr>
+<tr><td>Mocking</td><td>Phase 8</td><td><span class="badge badge-medium">Medium</span></td><td>2</td><td>3</td><td>🟡 Planned</td></tr>
+<tr><td>Performance &amp; Profiling</td><td>Phase 9</td><td><span class="badge badge-hard">Hard</span></td><td>3</td><td>5</td><td>🟡 Planned</td></tr>
+<tr><td>gRPC</td><td>Phase 9</td><td><span class="badge badge-hard">Hard</span></td><td>4</td><td>6</td><td>🟡 Planned</td></tr>
+<tr><td>Deployment</td><td>Phase 9</td><td><span class="badge badge-medium">Medium</span></td><td>3</td><td>5</td><td>🟡 Planned</td></tr>
+<tr><td>Capstone Project</td><td>Capstone</td><td><span class="badge badge-hard">Hard</span></td><td>14</td><td>21</td><td>🟡 Planned</td></tr>
+</tbody></table></div>
+</div><!-- /capstone -->
+
+</div><!-- #content -->
+
+<footer>
+  Built with <span>♥</span> · Go Mastery Roadmap · Progress saved locally · Start with <code>go version</code>
+</footer>
+
+<script>
+const STORE_KEY = 'go-mastery-roadmap-v1';
+
+function saveState() {
+  const state = {};
+  document.querySelectorAll('input[type="checkbox"]').forEach((el, i) => {
+    state['cb-' + i] = el.checked;
+  });
+  document.querySelectorAll('textarea').forEach((el, i) => {
+    state['ta-' + i] = el.value;
+  });
+  localStorage.setItem(STORE_KEY, JSON.stringify(state));
+}
+
+function loadState() {
+  try {
+    const state = JSON.parse(localStorage.getItem(STORE_KEY) || '{}');
+    document.querySelectorAll('input[type="checkbox"]').forEach((el, i) => {
+      if (state['cb-' + i] !== undefined) el.checked = state['cb-' + i];
+    });
+    document.querySelectorAll('textarea').forEach((el, i) => {
+      if (state['ta-' + i]) el.value = state['ta-' + i];
+    });
+  } catch(e) {}
+}
+
+function updateProgress() {
+  const all  = document.querySelectorAll('.task-item input[type="checkbox"]');
+  const done = [...all].filter(el => el.checked).length;
+  const pct  = all.length ? Math.round(done / all.length * 100) : 0;
+  document.getElementById('statDone').textContent  = done;
+  document.getElementById('statTotal').textContent = all.length;
+  document.getElementById('statPct').textContent   = pct + '%';
+  document.getElementById('progFill').style.width  = pct + '%';
+  document.getElementById('progPct').textContent   = pct + '%';
+}
+
+function buildNav() {
+  const container = document.getElementById('navLinks');
+  document.querySelectorAll('h1.md-h1, h2.md-h2').forEach(el => {
+    const a = document.createElement('a');
+    a.href        = '#' + el.id;
+    a.textContent = el.textContent.replace(/[^a-zA-Z0-9\s_\-\.]/g, '').trim().substring(0, 38);
+    a.style.paddingLeft = el.tagName === 'H2' ? '1.5rem' : '.6rem';
+    a.addEventListener('click', () => {
+      document.getElementById('sidebar').classList.remove('open');
+    });
+    container.appendChild(a);
+  });
+}
+
+function initActiveNav() {
+  const headings = document.querySelectorAll('h1.md-h1, h2.md-h2');
+  const links    = document.querySelectorAll('#navLinks a');
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        links.forEach(l => l.classList.remove('active'));
+        const active = [...links].find(l => l.getAttribute('href') === '#' + e.target.id);
+        if (active) { active.classList.add('active'); active.scrollIntoView({ block: 'nearest' }); }
+      }
+    });
+  }, { rootMargin: '-20% 0px -75% 0px' });
+  headings.forEach(h => obs.observe(h));
+}
+
+function initReadingBar() {
+  const bar = document.getElementById('topProgress');
+  window.addEventListener('scroll', () => {
+    const h = document.documentElement;
+    bar.style.width = (h.scrollTop / (h.scrollHeight - h.clientHeight)) * 100 + '%';
+  });
+}
+
+function initBTT() {
+  const btt = document.getElementById('btt');
+  window.addEventListener('scroll', () => {
+    btt.classList.toggle('visible', window.scrollY > 400);
+  });
+}
+
+document.getElementById('menuBtn').addEventListener('click', () => {
+  document.getElementById('sidebar').classList.toggle('open');
+});
+document.addEventListener('click', e => {
+  const sb  = document.getElementById('sidebar');
+  const btn = document.getElementById('menuBtn');
+  if (sb.classList.contains('open') && !sb.contains(e.target) && e.target !== btn) {
+    sb.classList.remove('open');
+  }
+});
+
+function initCardAnims() {
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.style.opacity  = '1';
+        e.target.style.transform = 'translateY(0)';
+        obs.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.07 });
+  document.querySelectorAll('.module-card').forEach(c => {
+    c.style.opacity   = '0';
+    c.style.transform = 'translateY(24px)';
+    c.style.transition = 'opacity .5s ease, transform .5s ease, border-color .3s, box-shadow .3s';
+    obs.observe(c);
+  });
+}
+
+document.addEventListener('mousemove', e => {
+  const dot = document.createElement('div');
+  Object.assign(dot.style, {
+    position: 'fixed', width: '4px', height: '4px',
+    borderRadius: '50%', background: 'var(--primary)',
+    left: e.clientX + 'px', top: e.clientY + 'px',
+    pointerEvents: 'none', opacity: '.5',
+    transition: 'opacity .5s', zIndex: '9999'
+  });
+  document.body.appendChild(dot);
+  requestAnimationFrame(() => {
+    setTimeout(() => { dot.style.opacity = '0'; setTimeout(() => dot.remove(), 500); }, 80);
+  });
+});
+
+document.querySelectorAll('input[type="checkbox"], textarea').forEach(el => {
+  el.addEventListener('change', () => { saveState(); updateProgress(); });
+  el.addEventListener('input',  () => { saveState(); });
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+  buildNav();
+  loadState();
+  updateProgress();
+  initActiveNav();
+  initReadingBar();
+  initBTT();
+  initCardAnims();
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aman - Definitely Not Your Average Dev</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Playfair+Display:wght@600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #00ff88;
+            --secondary: #ff0055;
+            --dark: #0a0e27;
+            --darker: #050817;
+            --text: #e0e0e0;
+            --accent: #ffd700;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Space Mono', monospace;
+            background: var(--darker);
+            color: var(--text);
+            overflow-x: hidden;
+            cursor: crosshair;
+        }
+
+        /* Animated background */
+        .bg-grid {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                linear-gradient(90deg, rgba(0, 255, 136, 0.03) 1px, transparent 1px),
+                linear-gradient(rgba(0, 255, 136, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            animation: gridScroll 20s linear infinite;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        @keyframes gridScroll {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(50px, 50px); }
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Hero section */
+        header {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+        }
+
+        .glitch {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(3rem, 10vw, 8rem);
+            font-weight: 800;
+            line-height: 1;
+            color: var(--primary);
+            position: relative;
+            animation: glitchFloat 3s ease-in-out infinite;
+        }
+
+        @keyframes glitchFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .glitch::before,
+        .glitch::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .glitch::before {
+            animation: glitch1 2.5s infinite;
+            color: var(--secondary);
+            z-index: -1;
+        }
+
+        .glitch::after {
+            animation: glitch2 2s infinite;
+            color: var(--accent);
+            z-index: -2;
+        }
+
+        @keyframes glitch1 {
+            0%, 100% { transform: translate(0); }
+            20% { transform: translate(-2px, 2px); }
+            40% { transform: translate(-2px, -2px); }
+            60% { transform: translate(2px, 2px); }
+            80% { transform: translate(2px, -2px); }
+        }
+
+        @keyframes glitch2 {
+            0%, 100% { transform: translate(0); }
+            20% { transform: translate(2px, -2px); }
+            40% { transform: translate(2px, 2px); }
+            60% { transform: translate(-2px, -2px); }
+            80% { transform: translate(-2px, 2px); }
+        }
+
+        .subtitle {
+            font-size: clamp(1rem, 3vw, 1.5rem);
+            color: var(--text);
+            margin-top: 1rem;
+            opacity: 0;
+            animation: fadeInUp 1s ease-out 0.5s forwards;
+        }
+
+        .subtitle .highlight {
+            color: var(--primary);
+            font-weight: 700;
+        }
+
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+        }
+
+        .sarcasm {
+            font-size: 0.9rem;
+            color: var(--secondary);
+            margin-top: 0.5rem;
+            font-style: italic;
+            opacity: 0;
+            animation: fadeInUp 1s ease-out 1s forwards;
+        }
+
+        /* Skills section */
+        .section {
+            padding: 6rem 0;
+            position: relative;
+        }
+
+        .section-title {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(2rem, 5vw, 4rem);
+            font-weight: 600;
+            margin-bottom: 3rem;
+            color: var(--primary);
+            position: relative;
+            display: inline-block;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 60%;
+            height: 3px;
+            background: linear-gradient(90deg, var(--secondary), transparent);
+        }
+
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .skill-card {
+            background: linear-gradient(135deg, rgba(0, 255, 136, 0.05), rgba(255, 0, 85, 0.05));
+            border: 2px solid rgba(0, 255, 136, 0.2);
+            padding: 2rem;
+            border-radius: 0;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            cursor: pointer;
+        }
+
+        .skill-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 255, 136, 0.1), transparent);
+            transition: left 0.5s;
+        }
+
+        .skill-card:hover::before {
+            left: 100%;
+        }
+
+        .skill-card:hover {
+            transform: translateY(-10px) rotate(1deg);
+            border-color: var(--primary);
+            box-shadow: 0 20px 40px rgba(0, 255, 136, 0.2);
+        }
+
+        .skill-card h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+            color: var(--accent);
+            margin-bottom: 1rem;
+        }
+
+        .skill-card p {
+            font-size: 0.9rem;
+            line-height: 1.6;
+            color: var(--text);
+        }
+
+        .skill-card .tag {
+            display: inline-block;
+            background: rgba(0, 255, 136, 0.2);
+            color: var(--primary);
+            padding: 0.3rem 0.8rem;
+            margin-top: 1rem;
+            font-size: 0.75rem;
+            border: 1px solid var(--primary);
+        }
+
+        /* About section */
+        .about-content {
+            background: rgba(10, 14, 39, 0.6);
+            border-left: 4px solid var(--secondary);
+            padding: 2rem;
+            font-size: 1.1rem;
+            line-height: 1.8;
+            margin-top: 2rem;
+            position: relative;
+        }
+
+        .about-content::before {
+            content: '"';
+            font-size: 6rem;
+            color: var(--secondary);
+            opacity: 0.2;
+            position: absolute;
+            top: -1rem;
+            left: 1rem;
+            font-family: 'Playfair Display', serif;
+        }
+
+        .terminal {
+            background: var(--dark);
+            border: 2px solid var(--primary);
+            padding: 1.5rem;
+            margin-top: 2rem;
+            font-family: 'Space Mono', monospace;
+            position: relative;
+        }
+
+        .terminal::before {
+            content: '> ';
+            color: var(--primary);
+        }
+
+        .terminal-text {
+            color: var(--text);
+            display: inline;
+        }
+
+        .cursor {
+            display: inline-block;
+            width: 10px;
+            height: 20px;
+            background: var(--primary);
+            animation: blink 1s step-end infinite;
+            margin-left: 5px;
+        }
+
+        @keyframes blink {
+            50% { opacity: 0; }
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 4rem 2rem;
+            border-top: 1px solid rgba(0, 255, 136, 0.2);
+            margin-top: 6rem;
+        }
+
+        footer p {
+            font-size: 0.9rem;
+            color: var(--text);
+            opacity: 0.7;
+        }
+
+        .disclaimer {
+            color: var(--secondary);
+            font-style: italic;
+            margin-top: 1rem;
+            font-size: 0.85rem;
+        }
+
+        /* Floating elements */
+        .float-element {
+            position: fixed;
+            font-size: 2rem;
+            opacity: 0.1;
+            pointer-events: none;
+            animation: float 20s ease-in-out infinite;
+        }
+
+        .float-1 {
+            top: 10%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+
+        .float-2 {
+            top: 60%;
+            right: 15%;
+            animation-delay: 5s;
+        }
+
+        .float-3 {
+            bottom: 20%;
+            left: 20%;
+            animation-delay: 10s;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            25% { transform: translate(20px, -20px) rotate(5deg); }
+            50% { transform: translate(-20px, 20px) rotate(-5deg); }
+            75% { transform: translate(20px, 20px) rotate(5deg); }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .skills-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-grid"></div>
+    
+    <!-- Floating decorative elements -->
+    <div class="float-element float-1">{ }</div>
+    <div class="float-element float-2">< /></div>
+    <div class="float-element float-3">[ ]</div>
+
+    <div class="container">
+        <header>
+            <h1 class="glitch" data-text="AMAN">AMAN</h1>
+            <p class="subtitle">
+                <span class="highlight">Compose Multiplatform Developer</span> & Go Enthusiast
+            </p>
+            <p class="sarcasm">
+                *Because writing code for one platform is just too mainstream*
+            </p>
+        </header>
+
+        <section class="section">
+            <h2 class="section-title">Skills That Pay the Bills</h2>
+            <p class="sarcasm">*Or at least, that's what I tell myself*</p>
+
+            <div class="skills-grid">
+                <div class="skill-card">
+                    <h3>Kotlin</h3>
+                    <p>Because Java needed a cooler, younger sibling who actually knows how to handle null safety. Writing elegant code that doesn't make you want to throw your laptop out the window.</p>
+                    <span class="tag">ACTUALLY FUN</span>
+                </div>
+
+                <div class="skill-card">
+                    <h3>Compose Multiplatform</h3>
+                    <p>Write once, run everywhere—and by everywhere, I mean iOS, Android, Desktop, and Web. It's like React Native, but it actually works. Revolutionary, I know.</p>
+                    <span class="tag">CROSS-PLATFORM MAGIC</span>
+                </div>
+
+                <div class="skill-card">
+                    <h3>Jetpack Compose</h3>
+                    <p>Declarative UI for Android. Finally, Google gave us something that doesn't require sacrificing a goat to the XML gods. Building beautiful interfaces with actual type safety.</p>
+                    <span class="tag">NO MORE XML</span>
+                </div>
+
+                <div class="skill-card">
+                    <h3>Ktor</h3>
+                    <p>Asynchronous server framework for Kotlin. Because who doesn't love building lightweight, performant APIs while everyone else is still wrestling with Spring Boot's 400MB startup time?</p>
+                    <span class="tag">BLAZINGLY FAST*</span>
+                </div>
+
+                <div class="skill-card">
+                    <h3>Go (Golang)</h3>
+                    <p>Concurrency? Goroutines. Deployment? Single binary. Generics? Well, they finally arrived... only took a decade. Building systems that are faster than your excuses.</p>
+                    <span class="tag">GOPHER APPROVED</span>
+                </div>
+
+                <div class="skill-card">
+                    <h3>Architecture Patterns</h3>
+                    <p>MVVM, MVI, Clean Architecture—I know them all. Structuring code so future-me doesn't curse past-me. It's called self-care.</p>
+                    <span class="tag">FUTURE-PROOF</span>
+                </div>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2 class="section-title">About This "Demo"</h2>
+            <div class="about-content">
+                <p>
+                    Welcome to the most over-engineered demo page you'll see today. I'm Aman, a developer who enjoys building applications that work on literally everything—mobile, desktop, web, probably your smart fridge too.
+                </p>
+                <p style="margin-top: 1rem;">
+                    When I'm not convincing people that Kotlin is superior to Java, I'm writing Go services that compile faster than you can say "garbage collection." My code is cleaner than my apartment, which admittedly isn't saying much.
+                </p>
+            </div>
+
+            <div class="terminal">
+                <span class="terminal-text">fun main() = println("Hello, World!") // It's that simple, really.</span>
+                <span class="cursor"></span>
+            </div>
+        </section>
+
+        <footer>
+            <p>© 2024 Aman - Making Apps, Breaking Builds, Fixing Bugs</p>
+            <p class="disclaimer">*This page uses approximately 73% sarcasm and 27% actual truth. Results may vary.</p>
+            <p class="disclaimer" style="margin-top: 0.5rem;">No XML was harmed in the making of this portfolio.</p>
+        </footer>
+    </div>
+
+    <script>
+        // Smooth scroll effect for skill cards
+        const cards = document.querySelectorAll('.skill-card');
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach((entry, index) => {
+                if (entry.isIntersecting) {
+                    setTimeout(() => {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }, index * 100);
+                }
+            });
+        }, { threshold: 0.1 });
+
+        cards.forEach(card => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(30px)';
+            card.style.transition = 'opacity 0.6s, transform 0.6s';
+            observer.observe(card);
+        });
+
+        // Cursor trail effect
+        document.addEventListener('mousemove', (e) => {
+            const trail = document.createElement('div');
+            trail.style.position = 'fixed';
+            trail.style.width = '4px';
+            trail.style.height = '4px';
+            trail.style.borderRadius = '50%';
+            trail.style.background = 'var(--primary)';
+            trail.style.left = e.clientX + 'px';
+            trail.style.top = e.clientY + 'px';
+            trail.style.pointerEvents = 'none';
+            trail.style.opacity = '0.6';
+            trail.style.transition = 'opacity 0.5s';
+            document.body.appendChild(trail);
+            
+            setTimeout(() => {
+                trail.style.opacity = '0';
+                setTimeout(() => trail.remove(), 500);
+            }, 100);
+        });
+    </script>
+</body>
+</html>

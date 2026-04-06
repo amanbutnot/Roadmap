@@ -1,0 +1,1222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Secure Messenger — Roadmap</title>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=DM+Sans:wght@400;500;700&family=DM+Serif+Display&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg:       #0d1117;
+      --surface:  #161b22;
+      --border:   #21262d;
+      --green:    #3fb950;
+      --green-dim:#1a4223;
+      --red:      #f85149;
+      --yellow:   #e3b341;
+      --blue:     #58a6ff;
+      --text:     #c9d1d9;
+      --muted:    #8b949e;
+      --heading:  #f0f6fc;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      font-size: 16px;
+      line-height: 1.7;
+    }
+
+    a { color: var(--blue); text-decoration: none; }
+
+    /* ─── LAYOUT ─── */
+    .page { max-width: 860px; margin: 0 auto; padding: 3rem 1.5rem 6rem; }
+
+    /* ─── OVERVIEW BANNER ─── */
+    .overview {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-left: 4px solid var(--green);
+      border-radius: 8px;
+      padding: 2rem 2.2rem;
+      margin-bottom: 3.5rem;
+    }
+
+    .overview-eyebrow {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.72rem;
+      color: var(--green);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: 0.6rem;
+    }
+
+    .overview h1 {
+      font-family: 'DM Serif Display', serif;
+      font-size: clamp(2rem, 5vw, 3rem);
+      color: var(--heading);
+      line-height: 1.15;
+      margin-bottom: 0.4rem;
+    }
+
+    .overview-tagline {
+      font-size: 1rem;
+      color: var(--muted);
+      font-style: italic;
+      margin-bottom: 1.4rem;
+    }
+
+    .overview-body {
+      font-size: 1rem;
+      color: var(--text);
+      line-height: 1.75;
+      margin-bottom: 1.4rem;
+    }
+
+    .overview-body strong { color: var(--heading); font-weight: 600; }
+
+    /* version pills row */
+    .pill-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: 1rem;
+    }
+
+    .pill {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.72rem;
+      padding: 0.25rem 0.7rem;
+      border-radius: 20px;
+      border: 1px solid var(--border);
+      background: var(--bg);
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      transition: border-color 0.2s, color 0.2s;
+    }
+
+    .pill:hover { border-color: var(--green); color: var(--green); cursor: default; }
+    .pill .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); flex-shrink: 0; }
+
+    /* progress bar */
+    .progress-wrap { margin-top: 1.6rem; }
+    .progress-label {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.72rem;
+      color: var(--muted);
+      margin-bottom: 0.4rem;
+      display: flex;
+      justify-content: space-between;
+    }
+    .progress-bar-bg {
+      height: 6px;
+      background: var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    .progress-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--green), #2ea043);
+      border-radius: 10px;
+      width: 0%;
+      transition: width 0.5s ease;
+    }
+
+    /* ─── SECTION HEADING ─── */
+    .section-heading {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.6rem;
+      color: var(--heading);
+      margin-bottom: 0.3rem;
+      margin-top: 3rem;
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+    }
+    .section-heading::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+      margin-left: 0.5rem;
+    }
+
+    /* ─── VERSION CARD ─── */
+    .version-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      margin-bottom: 1.8rem;
+      overflow: hidden;
+      transition: border-color 0.25s;
+    }
+    .version-card:hover { border-color: #30363d; }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 1.2rem 1.6rem 0;
+      flex-wrap: wrap;
+    }
+
+    .v-badge {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: var(--bg);
+      background: var(--green);
+      padding: 0.2rem 0.6rem;
+      border-radius: 4px;
+      letter-spacing: 0.05em;
+      flex-shrink: 0;
+    }
+
+    .card-title {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.4rem;
+      color: var(--heading);
+    }
+
+    .card-phase {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--muted);
+      font-style: italic;
+      margin-top: 0.15rem;
+    }
+
+    /* card body summary */
+    .card-summary {
+      font-size: 0.9rem;
+      color: var(--muted);
+      padding: 0.6rem 1.6rem 0;
+      line-height: 1.6;
+    }
+
+    /* collapse toggle */
+    .card-toggle {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.8rem 1.6rem;
+      cursor: pointer;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.72rem;
+      color: var(--blue);
+      user-select: none;
+      border: none;
+      background: none;
+      width: 100%;
+      text-align: left;
+    }
+    .card-toggle:hover { color: #8ac4ff; }
+    .card-toggle svg { transition: transform 0.25s; flex-shrink: 0; }
+    .card-toggle.open svg { transform: rotate(90deg); }
+
+    /* features list */
+    .features {
+      padding: 0 1.6rem 1.4rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .feature {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.9rem;
+      padding: 1rem 0;
+      border-top: 1px solid var(--border);
+      cursor: pointer;
+      transition: background 0.15s;
+      border-radius: 4px;
+    }
+
+    .feature:first-child { border-top: none; }
+
+    .cb {
+      width: 18px;
+      height: 18px;
+      flex-shrink: 0;
+      margin-top: 3px;
+      border-radius: 4px;
+      border: 2px solid #444c56;
+      background: var(--bg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s, border-color 0.2s;
+    }
+
+    .feature.done .cb {
+      background: var(--green-dim);
+      border-color: var(--green);
+    }
+
+    .feature.done .cb::after {
+      content: '';
+      display: block;
+      width: 5px;
+      height: 9px;
+      border: 2px solid var(--green);
+      border-top: none;
+      border-left: none;
+      transform: rotate(45deg) translateY(-1px);
+    }
+
+    .feature-content { flex: 1; }
+
+    .feature-name {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--heading);
+      margin-bottom: 0.35rem;
+      transition: color 0.2s;
+    }
+
+    .feature.done .feature-name {
+      color: var(--muted);
+      text-decoration: line-through;
+    }
+
+    .feature-desc {
+      font-size: 0.88rem;
+      color: var(--muted);
+      line-height: 1.75;
+    }
+
+    .feature.done .feature-desc { opacity: 0.5; }
+
+    /* ─── CARD COMPLETION BAR ─── */
+    .card-progress {
+      height: 3px;
+      background: var(--border);
+    }
+    .card-progress-fill {
+      height: 100%;
+      background: var(--green);
+      transition: width 0.4s ease;
+    }
+
+    /* collapsed state */
+    .features-wrap {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .features-wrap.open { max-height: 4000px; }
+
+    /* ─── STICKY TOP BAR ─── */
+    .sticky-bar {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: var(--border);
+      z-index: 100;
+    }
+    .sticky-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--green), #2ea043);
+      width: 0%;
+      transition: width 0.4s ease;
+    }
+
+    /* ─── COMPLEXITY BADGE ─── */
+    .complexity {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.65rem;
+      padding: 0.15rem 0.5rem;
+      border-radius: 3px;
+      letter-spacing: 0.06em;
+      font-weight: 600;
+      white-space: nowrap;
+      align-self: center;
+    }
+    .c-low    { background: rgba(63,185,80,0.15);  color: var(--green);  border: 1px solid rgba(63,185,80,0.3);  }
+    .c-med    { background: rgba(227,179,65,0.15); color: var(--yellow); border: 1px solid rgba(227,179,65,0.3); }
+    .c-high   { background: rgba(248,81,73,0.12);  color: var(--red);    border: 1px solid rgba(248,81,73,0.3);  }
+    .c-vhigh  { background: rgba(88,166,255,0.12); color: var(--blue);   border: 1px solid rgba(88,166,255,0.3); }
+
+    /* ─── DEPENDENCY NOTE ─── */
+    .dep-note {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.65rem;
+      color: var(--muted);
+      padding: 0 1.6rem 0;
+      margin-top: -0.1rem;
+      margin-bottom: 0.2rem;
+    }
+    .dep-note span { color: #58a6ff; }
+
+    /* ─── FEATURE TAGS ─── */
+    .feature-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.3rem;
+      margin-top: 0.5rem;
+    }
+    .ftag {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.6rem;
+      padding: 0.1rem 0.45rem;
+      border-radius: 3px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border);
+      color: var(--muted);
+      letter-spacing: 0.04em;
+    }
+    .ftag.be  { border-color: rgba(63,185,80,0.3);  color: #3fb950aa; }
+    .ftag.fe  { border-color: rgba(88,166,255,0.3); color: #58a6ffaa; }
+    .ftag.cr  { border-color: rgba(248,81,73,0.3);  color: #f85149aa; }
+    .ftag.ai  { border-color: rgba(227,179,65,0.3); color: #e3b341aa; }
+    .ftag.inf { border-color: rgba(139,73,234,0.3); color: #a371f7aa; }
+    .ftag.rt  { border-color: rgba(63,185,80,0.3);  color: #56d364aa; }
+
+    /* ─── EXPAND ALL BUTTON ─── */
+    .expand-all-wrap {
+      display: flex;
+      justify-content: flex-end;
+      margin-bottom: 1rem;
+      margin-top: -0.5rem;
+    }
+    .expand-all-btn {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--muted);
+      background: none;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 0.3rem 0.8rem;
+      cursor: pointer;
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .expand-all-btn:hover { color: var(--heading); border-color: #444c56; }
+
+    /* ─── FOOTER ─── */
+    footer {
+      margin-top: 4rem;
+      padding-top: 2rem;
+      border-top: 1px solid var(--border);
+      text-align: center;
+    }
+    footer p { font-size: 0.82rem; color: var(--muted); }
+    footer .tagline { color: var(--red); font-style: italic; margin-top: 0.4rem; }
+  </style>
+</head>
+<body>
+<div class="sticky-bar"><div class="sticky-bar-fill" id="sticky-fill"></div></div>
+<div class="page">
+
+  <!-- ═══════════════ OVERVIEW ═══════════════ -->
+  <div class="overview">
+    <div class="overview-eyebrow">📋 Project Roadmap</div>
+    <h1>Secure Messenger</h1>
+    <p class="overview-tagline">Because building WhatsApp wasn't ambitious enough.</p>
+
+    <p class="overview-body">
+      This roadmap breaks the entire project into <strong>8 versioned phases</strong>, each building on the last.
+      You start with a working messenger (v1.0), layer in quality-of-life features, introduce AI, harden
+      security, go offline, support multiple devices, add real-time calls, and finally land full desktop parity
+      in v4.0. Every feature has a checkbox — tick it when done. The overall progress bar updates automatically.
+    </p>
+
+    <p class="overview-body">
+      Click <strong>"Show features"</strong> on any card to expand it. Each item includes a plain-English
+      explanation of <em>what</em> it does and <em>why</em> it matters technically. Work top-to-bottom —
+      later phases depend on earlier ones.
+    </p>
+
+    <div class="pill-row">
+      <span class="pill"><span class="dot" style="background:var(--green)"></span>v1.0 Core System</span>
+      <span class="pill"><span class="dot" style="background:var(--green)"></span>v1.1 Usability</span>
+      <span class="pill"><span class="dot" style="background:var(--green)"></span>v1.5 AI Layer</span>
+      <span class="pill"><span class="dot" style="background:var(--green)"></span>v1.6 Power Features</span>
+      <span class="pill"><span class="dot" style="background:var(--red)"></span>v2.0 Security</span>
+      <span class="pill"><span class="dot" style="background:var(--yellow)"></span>v2.5 Multi-Device</span>
+      <span class="pill"><span class="dot" style="background:#8957e5"></span>v3.0 Offline System</span>
+      <span class="pill"><span class="dot" style="background:var(--blue)"></span>v3.5 Calls</span>
+      <span class="pill"><span class="dot" style="background:var(--yellow)"></span>v4.0 Full Platform</span>
+    </div>
+
+    <div class="progress-wrap">
+      <div class="progress-label">
+        <span>Overall Completion</span>
+        <span id="global-pct">0 / 0 features</span>
+      </div>
+      <div class="progress-bar-bg">
+        <div class="progress-bar-fill" id="global-bar"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════ ROADMAP ═══════════════ -->
+  <div class="section-heading">Execution Plan</div>
+  <div class="expand-all-wrap">
+    <button class="expand-all-btn" id="expand-all-btn" onclick="expandAll()">Expand all</button>
+  </div>
+
+
+  <!-- ── v1.0 ── -->
+  <div class="version-card" data-card>
+    <div class="card-progress"><div class="card-progress-fill" style="width:0%"></div></div>
+    <div class="card-header">
+      <div>
+        <span class="v-badge">v1.0</span>
+      </div>
+      <div style="flex:1">
+        <div class="card-title">Core System</div>
+        <div class="card-phase">Foundation — where everything either starts or collapses</div>
+      </div>
+      <span class="complexity c-high">HIGH</span>
+    </div>
+    <p class="card-summary">
+      The essential plumbing: user accounts, real-time messaging, group chats, media, push notifications, and offline-first local storage. Without this, nothing else exists.
+    </p>
+    <button class="card-toggle" onclick="toggle(this)">
+      <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M3 1.5L7 5L3 8.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Show features (7)
+    </button>
+    <div class="features-wrap">
+      <div class="features">
+
+        <label class="feature" onclick="check(this)">
+          <div class="cb"></div>
+          <div class="feature-content">
+            <div class="feature-name">Authentication (Email, Phone, JWT)</div>
+            <p class="feature-desc">Every system starts with "who are you?" This layer handles email/password registration, phone-number OTP verification, and issues signed JWT tokens that keep users logged in without storing passwords in plaintext. Refresh token rotation is included — security is a habit, not a checkbox.</p>
+            <div class="feature-tags"><span class="ftag be">backend</span><span class="ftag cr">auth</span><span class="ftag fe">frontend</span></div>
+          </div>
+        </label>
+
+        <label class="feature" onclick="check(this)">
+          <div class="cb"></div>
+          <div class="feature-content">
+            <div class="feature-name">Profile + Friends</div>
+            <p class="feature-desc">Users get a profile: avatar, display name, bio, status. The friends system is a classic bidirectional request model — you send a request, they accept, now you can see each other exist. Friend lists, pending requests, block lists. Everything a social graph needs without becoming a social network nobody asked for.</p>
+            <div class="feature-tags"><span class="ftag be">backend</span><span class="ftag fe">frontend</span><span class="ftag inf">database</span></div>
+          </div>
+        </label>
+
+        <label class="feature" onclick="check(this)">
+          <div class="cb"></div>
+          <div class="feature-content">
+            <div class="feature-name">1:1 Chat (WebSocket)</div>
+            <p class="feature-desc">The bread and butter. Real-time messaging over a persistent WebSocket connection. Messages are delivered instantly when both parties are online, and queued server-side when they're not. Delivery receipts (sent → delivered → read) are included, because leaving someone on "sent" for three days is a personality trait we're not supporting.</p>
+            <div class="feature-tags"><span class="ftag be">backend</span><span class="ftag rt">real-time</span><span class="ftag fe">frontend</span></div>
+          </div>
+        </label>
+
+        <label class="feature" onclick="check(this)">
+          <div class="cb"></div>
+          <div class="feature-content">
+            <div class="feature-name">Groups</div>
+            <p class="feature-desc">Group chats with admin roles, member management, group avatars, and names. Admins can add/remove people, promote others, or change group info. Messages fan out to all members via the WebSocket server. Groups are capped at a reasonable size — this is a messenger, not a broadcast platform.</p>
+            <div class="feature-tags"><span class="ftag be">backend</span><span class="ftag rt">real-time</span><span class="ftag fe">frontend</span></div>
+          </div>
+        </label>
+
+        <label class="feature" onclick="check(this)">
+          <div class="cb"></div>
+          <div class="feature-content">
+            <div class="feature-name">Media Messages</div>
+            <p class="feature-desc">Images, videos, documents, and audio — uploaded to cloud storage, delivered as message attachments. Thumbnails are generated server-side so you don't download a 50 MB video just to see a blurry preview. File size limits enforced, because some people will absolutely try to send a 4K raw video in a group chat.</p>
+            <div class="feature-tags"><span class="ftag be">backend</span><span class="ftag inf">storage</span><span class="ftag fe">frontend</span></div>
+          </div>
+        </label>
+
+        <label class="feature" onclick="check(this)">
+          <div class="cb"></div>
+          <div class="feature-content">
+            <div class="feature-name">Notifications (FCM + APNs)</div>
+            <p class="feature-desc">Push notifications via FCM (Android) and APNs (iOS) when the app is backgrounded or killed. In-app notification banners when the app is open. Notification badges on the home screen. Users can mute individual chats or groups, because some group chats should not be allowed to notify anyone at 2 AM.</p>
+            <div class="feature-tags"><span class="ftag be">backend</span><span class="ftag inf">infra</span><span class="ftag fe">frontend</span></div>
+          </div>
+        </label>
+
+        <label class="feature" onclick="check(this)">
+          <div class="cb"></div>
+          <div class="feature-content">
+            <div class="feature-name">Local Storage (SQLite + Cache)</div>
+            <p class="feature-desc">Messages, contacts, and media are cached locally so the app works even when the internet takes a break. SQLite on mobile for structured data, file-system cache for media. Smart eviction policies so you don't end up with the app consuming 4 GB of storage before the user notices.</p>
+            <div class="feature-tags"><span class="ftag fe">frontend</span><span class="ftag inf">database</span></div>
+          </div>
+        </label>
+
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ── v1.1 ── -->
+  <div class="version-card" data-card>
+    <div class="card-progress"><div class="card-progress-fill" style="width:0%"></div></div>
+    <div class="card-header">
+      <div><span class="v-badge">v1.1</span></div>
+      <div style="flex:1">
+        <div class="card-title">Usability</div>
+        <div class="card-phase">Make it usable — because functional and enjoyable are different things</div>
+      </div>
+      <span class="complexity c-med">MEDIUM</span>
+    </div>
+    <p class="dep-note">↳ requires <span>v1.0</span></p>
+    <p class="card-summary">
+      The features users actually notice: editing messages, reacting with emojis, voice messages, link previews, a media viewer, and privacy controls. This is what separates a working app from one people want to use.
+    </p>
+    <button class="card-toggle" onclick="toggle(this)">
+      <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M3 1.5L7 5L3 8.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Show features (6)
+    </button>
+    <div class="features-wrap">
+      <div class="features">
+
+        <label class="feature" onclick="check(this)">
+          <div class="cb"></div>
+          <div class="feature-content">
+            <div class="feature-name">Edit / Delete / Reply / Forward</div>
+            <p class="feature-desc">Edit a message within a time window, with an "edited" label so there's no revisionist history. Delete for yourself or delete for everyone — within limits. Reply threads with quoted context. Forward messages to other chats with a clear "forwarded" indicator so misinformation at least has a paper trail.</p>
+            <div class="feature-tags"><span class="ftag be">backend</span><span class="ftag fe">frontend</span><span class="ftag rt">real-time</span></div>
+          </div>
+        </label>
+
+        <label class="feature" onclick="check(this)">
+          <div class="cb"></div>
+          <div class="feature-content">
+            <div class="feature-name">Emoji Reactions</div>
+            <p class="feature-desc">Tap and hold (or double-tap) a message to react with an emoji. Reactions are aggregated and shown as a pill under the message. You can see who reacted with what — a tap on the pill shows the breakdown. Because sometimes a 👍 communicates more efficiently than typing "acknowledged."</p>
+            <div class="feature-tags"><span class="ftag fe">frontend</span><span class="ftag be">backend</span><span class="ftag rt">real-time</span></div>
+          </div>
+        </label>
+
+        <label class="feature" onclick="check(this)">
+          <div class="cb"></div>
+          <div class="feature-content">
+            <div class="feature-name">Voice Messages</div>
+            <p class="feature-desc">Hold to record, release to send. Waveform visualization during playback. Playback speed controls (1×, 1.5×, 2×) for those who receive 8-minute voice notes from people who could have sent a single sentence. Transcription arrives in v1.5.</p>
+            <div class="feature-tags"><span class="ftag fe">frontend</span><span class="ftag inf">storage</span><span class="ftag be">backend</span></div>
+          </div>
+        </label>
+
+        <label class="feature" onclick="check(this)">
+          <div class="cb"></div>
+          <div class="feature-content">
+            <div class="feature-name">Link Previews</div>
+            <p class="feature-desc">Paste a URL and the app fetches Open Graph metadata — title, description, image — and renders a clean preview card inline. Previews are fetched server-side so the recipient doesn't leak their IP to every random site someone pastes. Previews can be dismissed if irrelevant.</p>
+            <div class="feature-tags"><span class="ftag be">backend</span><span class="ftag fe">frontend</span></div>
+          </div>
+        </label>
+
+        <label class="feature" onclick="check(this)">
+          <div class="cb"></div>
+          <div class="feature-content">
+            <div class="feature-name">Media Viewer</div>
+            <p class="feature-desc">Full-screen viewer for images and videos with pinch-to-zoom, swipe-to-dismiss, and navigation between media in the same chat. Videos play inline with scrubbing. Images can be saved to the device gallery. No more opening media in a random browser tab because the app couldn't handle it.</p>
+            <div class="feature-tags"><span class="ftag fe">frontend</span></div>
+          </div>
+        </label>
+
+        <label class="feature" onclick="check(this)">
+          <div class="cb"></div>
+          <div class="feature-content">
+            <div class="feature-name">Privacy Controls</div>
+            <p class="feature-desc">Control who sees your profile photo, bio, last seen, and online status — options are Everyone, Contacts, or Nobody. Read receipts can be turned off globally (at the cost of also not receiving them — fairness matters). These settings are enforced server-side, not just client-side cosmetics.</p>
+            <div class="feature-tags"><span class="ftag be">backend</span><span class="ftag fe">frontend</span><span class="ftag cr">privacy</span></div>
+          </div>
+        </label>
+
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ── v1.5 ── -->
+  <div class="version-card" data-card>
+    <div class="card-progress"><div class="card-progress-fill" style="width:0%"></div></div>
+    <div class="card-header">
+      <div><span class="v-badge">v1.5</span></div>
+      <div style="flex:1">
+        <div class="card-title">AI Layer</div>
+        <div class="card-phase">Python enters the chat — and immediately asks for a requirements.txt</div>
+      </div>
+      <span class="complexity c-high">HIGH</span>
+    </div>
+    <p class="dep-note">↳ requires <span>v1.1</span></p>
+    <p class="card-summary">
+      Smart replies, chat summarization, translation, voice transcription, and optional sentiment detection. AI as a useful tool, not a gimmick — and always opt-in.
+    </p>
+    <button class="card-toggle" onclick="toggle(this)">
+      <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M3 1.5L7 5L3 8.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Show features (5)
+    </button>
+    <div class="features-wrap">
+      <div class="features">
+
+        <label class="feature" onclick="check(this)">
+          <div class="cb"></div>
+          <div class="feature-content">
+            <div class="feature-name">Smart Replies</div>
+            <p class="feature-desc">Context-aware reply suggestions appear above the keyboard based on the last message. Powered by a lightweight on-device model for common patterns ("Sure!", "On my way") and a server-side LLM for nuanced suggestions. Users can tap to insert or ignore entirely — not designed to replace thinking, just to save it for more important occasions.</p>
+            <div class="feature-tags"><span class="ftag ai">AI/ML</span><span class="ftag fe">frontend</span><span class="ftag be">backend</span></div>
+          </div>
+        </label>
+
+        <label class="feature" onclick="check(this)">
+          <div class="cb"></div>
+          <div class="feature-content">
+            <div class="feature-name">Chat Summarization</div>
+            <p class="feature-desc">Away for three days with 400 unread messages? Hit "Summarize" and get a bullet-point digest of what happened — decisions made, topics discussed, things you were tagged in. Runs server-side via an LLM, processes only message content (not metadata), and is generated fresh each time rather than cached in plaintext on the server.</p>
+            <div class="feature-tags"><span class="ftag ai">AI/ML</span><span class="ftag be">backend</span><span class="ftag fe">frontend</span></div>
+          </div>
+        </label>
+
+        <label class="feature" onclick="check(this)">
+          <div class="cb"></div>
+          <div class="feature-content">
+            <div class="feature-name">Translation</div>
+            <p class="feature-desc">Translate any message to your preferred language with a single tap. Detected language is shown automatically. Translations appear inline below the original — not as replacements — so context is preserved. Supports 50+ languages. Powered by a neural machine translation model, not a third-party API hop.</p>
+            <div class="feature-tags"><span class="ftag ai">AI/ML</span><span class="ftag be">backend</span><span class="ftag fe">frontend</span></div>
+          </div>
+        </label>
+
+        <label class="feature" onclick="check(this)">
+          <div class="cb"></div>
+          <div class="feature-content">
+            <div class="feature-name">Voice Transcription</div>
+            <p class="feature-desc">Voice messages get auto-transcribed and shown as expandable text below the waveform. Useful when you're in a meeting, on a train, or simply unwilling to put in earphones for a 4-minute voice note. Transcription runs asynchronously — the audio is delivered immediately, the text follows within seconds.</p>
+            <div class="feature-tags"><span class="ftag ai">AI/ML</span><span class="ftag be">backend</span><span class="ftag fe">frontend</span></div>
+          </div>
+        </label>
+
+        <label class="feature" onclick="check(this)">
+          <div class="cb"></div>
+          <div class="feature-content">
+            <div class="feature-name">Sentiment Detection (Opt-in)</div>
+            <p class="feature-desc">An optional feature that quietly flags if your message tone might land differently than intended — not in a preachy way, just a subtle indicator on the send button. Entirely client-side inference, never sent to a server, never logged. You can ignore it. You can turn it off. But sometimes it's useful to know your "fine" reads as "absolutely not fine."</p>
+            <div class="feature-tags"><span class="ftag ai">AI/ML</span><span class="ftag fe">frontend</span><span class="ftag cr">on-device</span></div>
+          </div>
+        </label>
+
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ── v1.6 ── -->
+  <div class="version-card" data-card>
+    <div class="card-progress"><div class="card-progress-fill" style="width:0%"></div></div>
+    <div class="card-header">
+      <div><span class="v-badge">v1.6</span></div>
+      <div style="flex:1">
+        <div class="card-title">Power Features</div>
+        <div class="card-phase">Control your data — because ownership matters</div>
+      </div>
+      <span class="complexity c-med">MEDIUM</span>
+    </div>
+    <p class="dep-note">↳ requires <span>v1.1</span></p>
+    <p class="card-summary">
+      Full-text search, media filters, chat folders, starred messages, and a storage manager. The features that transform "it works" into "it works exactly how I want it to."
+    </p>
+    <button class="card-toggle" onclick="toggle(this)">
+      <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M3 1.5L7 5L3 8.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Show features (5)
+    </button>
+    <div class="features-wrap">
+      <div class="features">
+
+        <label class="feature" onclick="check(this)">
+          <div class="cb"></div>
+          <div class="feature-content">
+            <div class="feature-name">Search (Chat + Global)</div>
+            <p class="feature-desc">Full-text search across all messages, with filters for sender, date range, media type, and chat. Results highlight the matching term in context. Global search also finds contacts and group names. Search is indexed locally for speed — no round-trip to the server just to find what someone sent you in October 2023.</p>
+            <div class="feature-tags"><span class="ftag fe">frontend</span><span class="ftag inf">indexing</span></div>
+          </div>
+        </label>
+
+        <label class="feature" onclick="check(this)">
+          <div class="cb"></div>
+          <div class="feature-content">
+            <div class="feature-name">Media Filters</div>
+            <p class="feature-desc">A dedicated media tab per chat showing all photos, videos, documents, links, and voice notes — grouped by type, sorted by date. Tap to open in the media viewer, long-press to select and bulk-download. Finally a way to find that one document someone sent "last month sometime" without scrolling through 2,000 messages.</p>
+            <div class="feature-tags"><span class="ftag fe">frontend</span><span class="ftag inf">database</span></div>
+          </div>
+        </label>
+
+        <label class="feature" onclick="check(this)">
+          <div class="cb"></div>
+          <div class="feature-content">
+            <div class="feature-name">Folders & Archive</div>
+            <p class="feature-desc">Organize chats into custom folders — Work, Family, Projects, People Who Owe Me Money. Folders sync across devices. Archive moves a chat out of the main list without deleting it — it reappears automatically when a new message arrives. "Archive" is just polite for "I need this to not exist in my peripheral vision."</p>
+            <div class="feature-tags"><span class="ftag fe">frontend</span><span class="ftag be">backend</span><span class="ftag inf">sync</span></div>
+          </div>
+        </label>
+
+        <label class="feature" onclick="check(this)">
+          <div class="cb"></div>
+          <div class="feature-content">
+            <div class="feature-name">Starred Messages</div>
+            <p class="feature-desc">Star any message to save it to a dedicated Starred Messages list, accessible from your profile. Useful for tracking decisions, important links, addresses, or anything you'd otherwise screenshot and lose in your camera roll. Stars are per-user and private — the sender doesn't know their message made the list.</p>
+            <div class="feature-tags"><span class="ftag fe">frontend</span><span class="ftag be">backend</span></div>
+          </div>
+        </label>
+
+        <label class="feature" onclick="check(this)">
+          <div class="cb"></div>
+          <div class="feature-content">
+            <div class="feature-name">Storage Manager</div>
+            <p class="feature-desc">A breakdown of how much storage each chat or media type is consuming, with one-tap deletion of cached media by chat, by type, or by age. Includes a "clear all except starred" option. Because discovering your messenger has consumed 11 GB of storage on a random Tuesday should not be how anyone's morning starts.</p>
+            <div class="feature-tags"><span class="ftag fe">frontend</span><span class="ftag inf">storage</span></div>
+          </div>
+        </label>
+
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ── v2.0 ── -->
+  <div class="version-card" data-card>
+    <div class="card-progress"><div class="card-progress-fill" style="width:0%"></div></div>
+    <div class="card-header">
+      <div><span class="v-badge" style="background:var(--red)">v2.0</span></div>
+      <div style="flex:1">
+        <div class="card-title">Security</div>
+        <div class="card-phase">Now things break — and then we fix them properly</div>
+      </div>
+      <span class="complexity c-vhigh">VERY HIGH</span>
+    </div>
+    <p class="dep-note">↳ requires <span>v1.0</span> — retrofit encryption into existing message flow</p>
+    <p class="card-summary">
+      End-to-end encryption via the Signal Protocol, encrypted media, proper key management, QR code identity verification, screenshot detection, and self-destructing messages. The hardest phase to build and the most important one to get right.
+    </p>
+    <button class="card-toggle" onclick="toggle(this)">
+      <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M3 1.5L7 5L3 8.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Show features (6)
+    </button>
+    <div class="features-wrap">
+      <div class="features">
+
+        <label class="feature" onclick="check(this)">
+          <div class="cb"></div>
+          <div class="feature-content">
+            <div class="feature-name">End-to-End Encryption (Signal Protocol)</div>
+            <p class="feature-desc">The Signal Protocol — Double Ratchet + X3DH key exchange — implemented properly. Messages are encrypted on the sender's device and decrypted only on the recipient's device. The server sees ciphertext, metadata, and timestamps — nothing else. No master keys, no backdoors. If we can't read it, neither can anyone else.</p>
+            <div class="feature-tags"><span class="ftag cr">crypto</span><span class="ftag be">backend</span><span class="ftag fe">frontend</span></div>
+          </div>
+        </label>
+
+        <label class="feature" onclick="check(this)">
+          <div class="cb"></div>
+          <div class="feature-content">
+            <div class="feature-name">Encrypted Media</div>
+            <p class="feature-desc">Media files are encrypted client-side before upload using a randomly generated key. That key is attached to the message (which is itself encrypted), not stored on the server. The server stores an opaque encrypted blob. Even if someone walks out with the storage bucket, they get nothing useful — just very expensive noise.</p>
+            <div class="feature-tags"><span class="ftag cr">crypto</span><span class="ftag inf">storage</span><span class="ftag fe">frontend</span></div>
+          </div>
+        </label>
+
+        <label class="feature" onclick="check(this)">
+          <div class="cb"></div>
+          <div class="feature-content">
+            <div class="feature-name">Key Management</div>
+            <p class="feature-desc">Identity keys, signed prekeys, and one-time prekeys are generated on-device; only the public halves are uploaded to the server. Private keys never leave the device — not even for backup. Key rotation happens automatically. Lost device? New keys are generated and forward secrecy is preserved for all past messages.</p>
+            <div class="feature-tags"><span class="ftag cr">crypto</span><span class="ftag be">backend</span><span class="ftag fe">frontend</span></div>
+          </div>
+        </label>
+
+        <label class="feature" onclick="check(this)">
+          <div class="cb"></div>
+          <div class="feature-content">
+            <div class="feature-name">QR Verification</div>
+            <p class="feature-desc">Verify you're actually talking to who you think you're talking to by scanning each other's QR codes in person. This compares the safety numbers (fingerprint of both public keys) and confirms no man-in-the-middle is quietly relaying your encrypted messages while pretending to be your friend. Trust, but verify. Especially verify.</p>
+            <div class="feature-tags"><span class="ftag cr">crypto</span><span class="ftag fe">frontend</span></div>
+          </div>
+        </label>
+
+        <label class="feature" onclick="check(this)">
+          <div class="cb"></div>
+          <div class="feature-content">
+            <div class="feature-name">Screenshot Detection</div>
+            <p class="feature-desc">For view-once messages and designated sensitive chats, the app detects screenshot attempts and notifies the sender. On Android, enforced via FLAG_SECURE (which also blocks screen recording). On iOS, detected via the UIScreen API. A second phone pointed at the screen remains an unsolved problem, as it has since the dawn of "disappearing" photos.</p>
+            <div class="feature-tags"><span class="ftag fe">frontend</span><span class="ftag cr">privacy</span><span class="ftag be">backend</span></div>
+          </div>
+        </label>
+
+        <label class="feature" onclick="check(this)">
+          <div class="cb"></div>
+          <div class="feature-content">
+            <div class="feature-name">Burn-After-Read (Disappearing Messages)</div>
+            <p class="feature-desc">Messages with a configurable timer — 5 seconds, 1 minute, 1 hour, 1 day, 1 week — self-destruct after being opened. The timer starts on open, not on send. Deletion is executed on all recipient devices simultaneously via an encrypted delete signal. Doesn't prevent screenshots, but reduces the blast radius of someone leaving their unlocked phone unattended.</p>
+            <div class="feature-tags"><span class="ftag cr">privacy</span><span class="ftag be">backend</span><span class="ftag rt">real-time</span><span class="ftag fe">frontend</span></div>
+          </div>
+        </label>
+
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ── v2.5 ── -->
+  <div class="version-card" data-card>
+    <div class="card-progress"><div class="card-progress-fill" style="width:0%"></div></div>
+    <div class="card-header">
+      <div><span class="v-badge" style="background:var(--yellow);color:#0d1117">v2.5</span></div>
+      <div style="flex:1">
+        <div class="card-title">Multi-Device</div>
+        <div class="card-phase">Welcome to pain — consistency across chaos</div>
+      </div>
+      <span class="complexity c-vhigh">VERY HIGH</span>
+    </div>
+    <p class="dep-note">↳ requires <span>v2.0</span> — per-device E2E keys depend on encryption being in place</p>
+    <p class="card-summary">
+      Link up to 5 devices, sync messages and read status across all of them in real time, maintain per-device encryption so a compromised tablet doesn't compromise everything, and manage sessions from one screen.
+    </p>
+    <button class="card-toggle" onclick="toggle(this)">
+      <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M3 1.5L7 5L3 8.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Show features (4)
+    </button>
+    <div class="features-wrap">
+      <div class="features">
+
+        <label class="feature" onclick="check(this)">
+          <div class="cb"></div>
+          <div class="feature-content">
+            <div class="feature-name">Device Linking (QR Code)</div>
+            <p class="feature-desc">Link up to 5 companion devices to your primary account via QR code — no SMS, no separate login. The primary device generates a linking invitation, the companion scans it, and a device-specific key pair is established. Think of it as adding a new member to a very exclusive, encrypted key exchange club.</p>
+            <div class="feature-tags"><span class="ftag cr">crypto</span><span class="ftag be">backend</span><span class="ftag fe">frontend</span></div>
+          </div>
+        </label>
+
+        <label class="feature" onclick="check(this)">
+          <div class="cb"></div>
+          <div class="feature-content">
+            <div class="feature-name">Cross-Device Sync</div>
+            <p class="feature-desc">Messages, read status, reactions, and settings stay in sync across all linked devices in real time. When you read a message on your tablet, it's marked read on your phone too. The sync protocol handles conflicts using vector clocks — because "last write wins" isn't good enough when you're typing on two devices simultaneously like a chaos agent.</p>
+            <div class="feature-tags"><span class="ftag be">backend</span><span class="ftag rt">real-time</span><span class="ftag inf">sync</span></div>
+          </div>
+        </label>
+
+        <label class="feature" onclick="check(this)">
+          <div class="cb"></div>
+          <div class="feature-content">
+            <div class="feature-name">Per-Device Encryption</div>
+            <p class="feature-desc">Each linked device has its own encryption keys and its own message copy — the sender encrypts once per recipient device, not once for the account. A compromised companion device doesn't expose messages on your other devices. Removing a linked device immediately invalidates its keys and stops it from receiving new messages.</p>
+            <div class="feature-tags"><span class="ftag cr">crypto</span><span class="ftag be">backend</span></div>
+          </div>
+        </label>
+
+        <label class="feature" onclick="check(this)">
+          <div class="cb"></div>
+          <div class="feature-content">
+            <div class="feature-name">Session Control</div>
+            <p class="feature-desc">See all linked devices in one screen — device name, last active time, approximate location. Revoke access to any device with one tap, immediately and irrevocably. Auto-logout of inactive devices after a configurable period. Because "I left my laptop logged in at the hotel" should be a mild inconvenience, not a security incident.</p>
+            <div class="feature-tags"><span class="ftag be">backend</span><span class="ftag fe">frontend</span><span class="ftag cr">security</span></div>
+          </div>
+        </label>
+
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ── v3.0 ── -->
+  <div class="version-card" data-card>
+    <div class="card-progress"><div class="card-progress-fill" style="width:0%"></div></div>
+    <div class="card-header">
+      <div><span class="v-badge" style="background:#8957e5">v3.0</span></div>
+      <div style="flex:1">
+        <div class="card-title">Offline System</div>
+        <div class="card-phase">Distributed systems hell — where CAP theorem laughs at you</div>
+      </div>
+      <span class="complexity c-vhigh">VERY HIGH</span>
+    </div>
+    <p class="dep-note">↳ requires <span>v2.0</span> — offline messages still need to be encrypted</p>
+    <p class="card-summary">
+      Message without the internet: LAN messaging via mDNS, Bluetooth messaging over BLE, a persistent offline queue, cross-transport sync when connectivity returns, and deduplication so a message delivered via three paths only appears once.
+    </p>
+    <button class="card-toggle" onclick="toggle(this)">
+      <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M3 1.5L7 5L3 8.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Show features (5)
+    </button>
+    <div class="features-wrap">
+      <div class="features">
+
+        <label class="feature" onclick="check(this)">
+          <div class="cb"></div>
+          <div class="feature-content">
+            <div class="feature-name">LAN Messaging</div>
+            <p class="feature-desc">Discover and message other users on the same local network — office WiFi, home network, conference venue — without any internet connection. Devices broadcast presence via mDNS, establish direct encrypted TCP connections, and exchange messages peer-to-peer. End-to-end encryption still applies — the LAN being trusted doesn't mean the messages should be readable by whoever controls the router.</p>
+            <div class="feature-tags"><span class="ftag inf">networking</span><span class="ftag cr">crypto</span><span class="ftag fe">frontend</span></div>
+          </div>
+        </label>
+
+        <label class="feature" onclick="check(this)">
+          <div class="cb"></div>
+          <div class="feature-content">
+            <div class="feature-name">Bluetooth Messaging (BLE)</div>
+            <p class="feature-desc">Short-range peer-to-peer messaging via BLE when there's no WiFi at all. Range is approximately 10 metres, throughput is limited, but it works in a forest, a basement, a stadium, or any other place that treats internet access as optional. Messages are chunked, sequenced, and reassembled — Bluetooth's MTU is not exactly generous.</p>
+            <div class="feature-tags"><span class="ftag inf">networking</span><span class="ftag fe">frontend</span><span class="ftag cr">crypto</span></div>
+          </div>
+        </label>
+
+        <label class="feature" onclick="check(this)">
+          <div class="cb"></div>
+          <div class="feature-content">
+            <div class="feature-name">Offline Queue</div>
+            <p class="feature-desc">Messages composed while offline are queued locally with a pending indicator, and flushed to the server the moment connectivity returns. The queue is persistent across app restarts — closing the app doesn't lose your unsent messages. Ordering is preserved. Retries use exponential backoff so the app doesn't hammer a flaky connection and drain the battery.</p>
+            <div class="feature-tags"><span class="ftag fe">frontend</span><span class="ftag inf">database</span><span class="ftag be">backend</span></div>
+          </div>
+        </label>
+
+        <label class="feature" onclick="check(this)">
+          <div class="cb"></div>
+          <div class="feature-content">
+            <div class="feature-name">Cross-Transport Sync</div>
+            <p class="feature-desc">A message sent via Bluetooth or LAN eventually syncs to the server when internet connectivity is restored, so recipients not on the local network receive it too. The transport layer is abstracted — the app picks the best available path (internet → LAN → Bluetooth) without the user needing to know or care. Routing decisions are made per-message, per-recipient.</p>
+            <div class="feature-tags"><span class="ftag inf">networking</span><span class="ftag be">backend</span><span class="ftag inf">sync</span></div>
+          </div>
+        </label>
+
+        <label class="feature" onclick="check(this)">
+          <div class="cb"></div>
+          <div class="feature-content">
+            <div class="feature-name">Deduplication</div>
+            <p class="feature-desc">A message might travel via Bluetooth, then LAN, then internet — potentially arriving multiple times through different paths. Each message carries a unique UUID and a content hash; duplicates are detected and silently discarded at every hop. Because receiving the same message six times through different transports is not the experience we're going for.</p>
+            <div class="feature-tags"><span class="ftag be">backend</span><span class="ftag inf">networking</span></div>
+          </div>
+        </label>
+
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ── v3.5 ── -->
+  <div class="version-card" data-card>
+    <div class="card-progress"><div class="card-progress-fill" style="width:0%"></div></div>
+    <div class="card-header">
+      <div><span class="v-badge" style="background:var(--blue)">v3.5</span></div>
+      <div style="flex:1">
+        <div class="card-title">Calls</div>
+        <div class="card-phase">Real-time communication — milliseconds matter now</div>
+      </div>
+      <span class="complexity c-high">HIGH</span>
+    </div>
+    <p class="dep-note">↳ requires <span>v2.0</span> — call signalling must be encrypted; <span>v2.5</span> for multi-device call routing</p>
+    <p class="card-summary">
+      Encrypted voice and video calls via WebRTC, group calls via an SFU that routes without decrypting, and adaptive bitrate that keeps the call alive when the network is being difficult.
+    </p>
+    <button class="card-toggle" onclick="toggle(this)">
+      <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M3 1.5L7 5L3 8.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Show features (4)
+    </button>
+    <div class="features-wrap">
+      <div class="features">
+
+        <label class="feature" onclick="check(this)">
+          <div class="cb"></div>
+          <div class="feature-content">
+            <div class="feature-name">Voice Calls (WebRTC + DTLS-SRTP)</div>
+            <p class="feature-desc">Encrypted peer-to-peer voice calls via WebRTC, with STUN/TURN fallback for when direct P2P isn't possible (corporate firewalls, strict NATs). Opus codec for audio — low latency, high quality, gracefully degrades on poor connections. DTLS-SRTP ensures the media stream is encrypted end-to-end, not just the signalling.</p>
+            <div class="feature-tags"><span class="ftag rt">real-time</span><span class="ftag cr">crypto</span><span class="ftag inf">networking</span><span class="ftag fe">frontend</span></div>
+          </div>
+        </label>
+
+        <label class="feature" onclick="check(this)">
+          <div class="cb"></div>
+          <div class="feature-content">
+            <div class="feature-name">Video Calls</div>
+            <p class="feature-desc">1:1 video calls with hardware-accelerated encoding (H.264/VP8) and adaptive resolution based on bandwidth. Background blur available on supported devices — because some of us have rooms we're not ready to share with the world. Encrypted the same way as voice: DTLS-SRTP, no media passing through the server if P2P is possible.</p>
+            <div class="feature-tags"><span class="ftag rt">real-time</span><span class="ftag cr">crypto</span><span class="ftag fe">frontend</span></div>
+          </div>
+        </label>
+
+        <label class="feature" onclick="check(this)">
+          <div class="cb"></div>
+          <div class="feature-content">
+            <div class="feature-name">Group Calls (SFU, up to 32)</div>
+            <p class="feature-desc">Multi-party voice and video via a selective forwarding unit (SFU) for scalability. The SFU routes encrypted streams between participants without decrypting them — it acts as a traffic director, not a wiretap. Supports up to 32 participants with active speaker detection and automatic layout adjustment.</p>
+            <div class="feature-tags"><span class="ftag rt">real-time</span><span class="ftag inf">infra</span><span class="ftag cr">crypto</span><span class="ftag be">backend</span></div>
+          </div>
+        </label>
+
+        <label class="feature" onclick="check(this)">
+          <div class="cb"></div>
+          <div class="feature-content">
+            <div class="feature-name">Adaptive Bitrate</div>
+            <p class="feature-desc">The media engine continuously monitors packet loss, jitter, and available bandwidth — adjusting video resolution, frame rate, and audio quality in real time. Going from 4G to WiFi? Quality ramps up automatically. Walking into a dead zone? The call degrades gracefully instead of freezing and then dropping. The goal is the call never dropping, even if the last few seconds are in 240p.</p>
+            <div class="feature-tags"><span class="ftag rt">real-time</span><span class="ftag inf">networking</span><span class="ftag fe">frontend</span></div>
+          </div>
+        </label>
+
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ── v4.0 ── -->
+  <div class="version-card" data-card>
+    <div class="card-progress"><div class="card-progress-fill" style="width:0%"></div></div>
+    <div class="card-header">
+      <div><span class="v-badge" style="background:var(--yellow);color:#0d1117">v4.0</span></div>
+      <div style="flex:1">
+        <div class="card-title">Full Platform</div>
+        <div class="card-phase">Final boss — where desktop gets the respect it deserves</div>
+      </div>
+      <span class="complexity c-high">HIGH</span>
+    </div>
+    <p class="dep-note">↳ requires <span>v3.5</span> — screen sharing & LAN calls build on the call infrastructure</p>
+    <p class="card-summary">
+      Screen sharing, call recording, LAN/Bluetooth calls, full Windows/macOS/Linux desktop parity, drag-and-drop, and a system tray presence. The app stops being a phone app and becomes a platform.
+    </p>
+    <button class="card-toggle" onclick="toggle(this)">
+      <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M3 1.5L7 5L3 8.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Show features (6)
+    </button>
+    <div class="features-wrap">
+      <div class="features">
+
+        <label class="feature" onclick="check(this)">
+          <div class="cb"></div>
+          <div class="feature-content">
+            <div class="feature-name">Screen Sharing</div>
+            <p class="feature-desc">Share your entire screen or a specific window during a call. The shared stream is captured, encoded, and transmitted via the same SFU infrastructure as video — at higher resolution and lower frame rate, optimised for text readability. Participants can request control, which the presenter can grant or deny. Encrypted in transit. Works on desktop and, through creative use of accessibility APIs, on mobile too.</p>
+            <div class="feature-tags"><span class="ftag rt">real-time</span><span class="ftag inf">infra</span><span class="ftag fe">frontend</span><span class="ftag cr">crypto</span></div>
+          </div>
+        </label>
+
+        <label class="feature" onclick="check(this)">
+          <div class="cb"></div>
+          <div class="feature-content">
+            <div class="feature-name">Call Recording (Local + Consent)</div>
+            <p class="feature-desc">Record calls locally — never on the server — with explicit opt-in consent notification to all participants. The recording is encrypted with the user's device key and stored in a designated folder. Transcription can be generated post-call using the same pipeline from v1.5. The consent notification cannot be suppressed or bypassed — if someone starts recording, everyone knows, full stop.</p>
+            <div class="feature-tags"><span class="ftag fe">frontend</span><span class="ftag cr">privacy</span><span class="ftag inf">storage</span></div>
+          </div>
+        </label>
+
+        <label class="feature" onclick="check(this)">
+          <div class="cb"></div>
+          <div class="feature-content">
+            <div class="feature-name">LAN / Bluetooth Calls</div>
+            <p class="feature-desc">Voice and video calls that route entirely over the local network or Bluetooth when the internet is unavailable or untrustworthy. The WebRTC stack is configured to prefer local network candidates and fall back to Bluetooth audio as a last resort. Quality is limited by the transport, but a Bluetooth call beats no call — and that's the bar we're aiming for.</p>
+            <div class="feature-tags"><span class="ftag rt">real-time</span><span class="ftag inf">networking</span><span class="ftag cr">crypto</span></div>
+          </div>
+        </label>
+
+        <label class="feature" onclick="check(this)">
+          <div class="cb"></div>
+          <div class="feature-content">
+            <div class="feature-name">Desktop Parity (Windows / macOS / Linux)</div>
+            <p class="feature-desc">The desktop app reaches full feature parity with mobile — every capability on phone is available on desktop. Native keyboard shortcuts, multi-window support, OS notification centre integration, and proper high-DPI display support. Built with Compose Multiplatform so the codebase stays shared, not forked-and-forgotten like some apps we won't name.</p>
+            <div class="feature-tags"><span class="ftag fe">frontend</span><span class="ftag inf">platform</span></div>
+          </div>
+        </label>
+
+        <label class="feature" onclick="check(this)">
+          <div class="cb"></div>
+          <div class="feature-content">
+            <div class="feature-name">Drag & Drop</div>
+            <p class="feature-desc">Drag files, images, or text from anywhere on your desktop straight into a chat window to send them. Drag media out of the app to save it to the desktop. Supports multiple files in a single drag — they're queued, previewed before sending, and dispatched together. A small thing that makes the desktop feel like a first-class experience rather than a scaled-up phone app wearing a trenchcoat.</p>
+            <div class="feature-tags"><span class="ftag fe">frontend</span><span class="ftag inf">platform</span></div>
+          </div>
+        </label>
+
+        <label class="feature" onclick="check(this)">
+          <div class="cb"></div>
+          <div class="feature-content">
+            <div class="feature-name">System Tray</div>
+            <p class="feature-desc">The app lives in the system tray when minimised — a small icon with an unread badge. Right-click opens a quick-reply menu for recent chats without bringing the full window up. Double-click restores the window. Notifications are native OS notifications with action buttons (Reply, Mark as Read, Mute). The app can start on login and run silently in the background — quietly doing its job, like all good infrastructure should.</p>
+            <div class="feature-tags"><span class="ftag fe">frontend</span><span class="ftag inf">platform</span></div>
+          </div>
+        </label>
+
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ─── FOOTER ─── -->
+  <footer>
+    <p>© 2024 Aman — Making Apps, Breaking Builds, Fixing Bugs</p>
+    <p class="tagline">*Estimated completion: somewhere between "soon" and heat death of the universe*</p>
+    <p style="margin-top:0.4rem;font-size:0.75rem;color:#444c56">No private keys were hardcoded in the making of this roadmap.</p>
+  </footer>
+
+</div>
+
+<script>
+  /* ── toggle single card ── */
+  function toggle(btn) {
+    const wrap = btn.nextElementSibling;
+    const isOpen = wrap.classList.toggle('open');
+    btn.classList.toggle('open', isOpen);
+    const count = btn.closest('[data-card]').querySelectorAll('.feature').length;
+    btn.innerHTML = `
+      <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+        <path d="M3 1.5L7 5L3 8.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      ${isOpen ? 'Hide' : 'Show'} features (${count})`;
+    updateExpandAllLabel();
+  }
+
+  /* ── expand / collapse all ── */
+  function expandAll() {
+    const cards = document.querySelectorAll('[data-card]');
+    const anyOpen = [...cards].some(c => c.querySelector('.features-wrap.open'));
+    cards.forEach(card => {
+      const wrap = card.querySelector('.features-wrap');
+      const btn  = card.querySelector('.card-toggle');
+      const count = card.querySelectorAll('.feature').length;
+      const shouldOpen = !anyOpen;
+      wrap.classList.toggle('open', shouldOpen);
+      btn.classList.toggle('open', shouldOpen);
+      btn.innerHTML = `
+        <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+          <path d="M3 1.5L7 5L3 8.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        ${shouldOpen ? 'Hide' : 'Show'} features (${count})`;
+    });
+    updateExpandAllLabel();
+  }
+
+  function updateExpandAllLabel() {
+    const cards = document.querySelectorAll('[data-card]');
+    const anyOpen = [...cards].some(c => c.querySelector('.features-wrap.open'));
+    document.getElementById('expand-all-btn').textContent = anyOpen ? 'Collapse all' : 'Expand all';
+  }
+
+  /* ── check / uncheck feature ── */
+  function check(label) {
+    label.classList.toggle('done');
+    updateProgress();
+  }
+
+  /* ── recalculate all progress bars + sticky bar ── */
+  function updateProgress() {
+    const cards = document.querySelectorAll('[data-card]');
+    let totalDone = 0, totalAll = 0;
+
+    cards.forEach(card => {
+      const all  = card.querySelectorAll('.feature').length;
+      const done = card.querySelectorAll('.feature.done').length;
+      const pct  = all ? Math.round((done / all) * 100) : 0;
+      card.querySelector('.card-progress-fill').style.width = pct + '%';
+      totalDone += done;
+      totalAll  += all;
+    });
+
+    const globalPct = totalAll ? Math.round((totalDone / totalAll) * 100) : 0;
+    document.getElementById('global-bar').style.width   = globalPct + '%';
+    document.getElementById('sticky-fill').style.width  = globalPct + '%';
+    document.getElementById('global-pct').textContent   =
+      `${totalDone} / ${totalAll} features (${globalPct}%)`;
+  }
+
+  updateProgress();
+  updateExpandAllLabel();
+</script>
+</body>
+</html>
